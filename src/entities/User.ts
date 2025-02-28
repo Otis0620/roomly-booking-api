@@ -1,18 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { UserRole } from '../enums/UserRole';
 
-@Entity()
+@Entity('users')
 export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @Column({ type: 'varchar', unique: true, nullable: false })
+  email: string;
 
-    @Column()
-    firstName: string
+  @Column({ type: 'varchar', nullable: false })
+  password_hash: string;
 
-    @Column()
-    lastName: string
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.GUEST,
+    nullable: false,
+  })
+  role: UserRole;
 
-    @Column()
-    age: number
-
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
 }
