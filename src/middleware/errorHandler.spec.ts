@@ -18,11 +18,9 @@ describe('errorHandler', () => {
     nextFunction = jest.fn();
   });
 
-  it('should handle errors with custom status code and message', () => {
+  it('should handle errors with custom status code and message when instance of BaseError', () => {
     // Arrange
     const mockError: HttpError = new BaseError('Not Found', 404) as HttpError;
-
-    // mockError.status = 404;
 
     // Act
     errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);
@@ -35,24 +33,9 @@ describe('errorHandler', () => {
     });
   });
 
-  it('should handle errors with default 500 status code when status is missing', () => {
+  it('should handle errors with default 500 status code when not an instance of BaseError', () => {
     // Arrange
     const mockError: HttpError = new Error('Something went wrong') as HttpError;
-
-    // Act
-    errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);
-
-    // Assert
-    expect(mockResponse.status).toHaveBeenCalledWith(500);
-    expect(mockResponse.json).toHaveBeenCalledWith({
-      error: 'Something went wrong',
-      code: 500,
-    });
-  });
-
-  it('should use default error message when message is missing', () => {
-    // Arrange
-    const mockError: HttpError = new Error() as HttpError;
 
     // Act
     errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);
