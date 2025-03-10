@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-
 import { Container } from 'inversify';
 
 import { UserRole } from '@lib/types';
@@ -39,74 +38,78 @@ describe('AuthService', () => {
       .toConstantValue(userRepositoryMock);
 
     authService = container.get<AuthService>(DEPENDENCY_IDENTIFIERS.AuthService);
-
-    mockBcryptHash.mockReset();
-    mockBcryptCompare.mockReset();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should successfully register a new user', async () => {
-    // Arrange
-    const email = 'test@example.com';
-    const password = 'securepassword';
-    const role = UserRole.GUEST;
-
-    const hashedPassword = 'hashed_password';
-    const newUser: User = {
-      id: '123',
-      email,
-      password_hash: hashedPassword,
-      role,
-      created_at: new Date(),
-    };
-
-    mockBcryptHash.mockResolvedValue(hashedPassword);
-    userRepositoryMock.findByEmail.mockResolvedValue(null);
-    userRepositoryMock.create.mockResolvedValue(newUser);
-
-    // Act
-    const result = await authService.register(email, password, role);
-
-    // Assert
-    expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
-    expect(mockBcryptHash).toHaveBeenCalledWith(password, 10);
-    expect(userRepositoryMock.create).toHaveBeenCalledWith({
-      email,
-      password_hash: hashedPassword,
-      role,
+  describe('register', () => {
+    beforeEach(() => {
+      mockBcryptHash.mockReset();
+      mockBcryptCompare.mockReset();
     });
 
-    expect(result).toMatchObject<UserDTO>({
-      id: newUser.id,
-      email: newUser.email,
-      role: newUser.role,
-      createdAt: newUser.created_at.toISOString(),
+    it('should successfully register a new user', async () => {
+      // Arrange
+      const email = 'test@example.com';
+      const password = 'securepassword';
+      const role = UserRole.GUEST;
+
+      const hashedPassword = 'hashed_password';
+      const newUser: User = {
+        id: '123',
+        email,
+        password_hash: hashedPassword,
+        role,
+        created_at: new Date(),
+      };
+
+      mockBcryptHash.mockResolvedValue(hashedPassword);
+      userRepositoryMock.findByEmail.mockResolvedValue(null);
+      userRepositoryMock.create.mockResolvedValue(newUser);
+
+      // Act
+      const result = await authService.register(email, password, role);
+
+      // Assert
+      expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
+      expect(mockBcryptHash).toHaveBeenCalledWith(password, 10);
+      expect(userRepositoryMock.create).toHaveBeenCalledWith({
+        email,
+        password_hash: hashedPassword,
+        role,
+      });
+
+      expect(result).toMatchObject<UserDTO>({
+        id: newUser.id,
+        email: newUser.email,
+        role: newUser.role,
+        createdAt: newUser.created_at.toISOString(),
+      });
     });
-  });
 
-  it('should throw BadRequestError if email is already registered', async () => {
-    // Arrange
-    const email = 'test@example.com';
-    const password = 'securepassword';
-    const role = UserRole.GUEST;
+    it('should throw BadRequestError if email is already registered', async () => {
+      // Arrange
+      const email = 'test@example.com';
+      const password = 'securepassword';
+      const role = UserRole.GUEST;
 
-    const existingUser: User = {
-      id: '123',
-      email,
-      password_hash: 'hashed_password',
-      role,
-      created_at: new Date(),
-    };
+      const existingUser: User = {
+        id: '123',
+        email,
+        password_hash: 'hashed_password',
+        role,
+        created_at: new Date(),
+      };
 
-    userRepositoryMock.findByEmail.mockResolvedValue(existingUser);
+      userRepositoryMock.findByEmail.mockResolvedValue(existingUser);
 
-    // Act & Assert
-    await expect(authService.register(email, password, role)).rejects.toThrow(BadRequestError);
+      // Act & Assert
+      await expect(authService.register(email, password, role)).rejects.toThrow(BadRequestError);
 
-    expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
-    expect(userRepositoryMock.create).not.toHaveBeenCalled();
+      expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
+      expect(userRepositoryMock.create).not.toHaveBeenCalled();
+    });
   });
 });
