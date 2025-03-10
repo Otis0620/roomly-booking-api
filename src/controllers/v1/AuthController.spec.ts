@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 
+import { UserRole } from '@lib/types';
+
+import { UserDTO } from '@dtos';
+import { User } from '@entities';
+import { BadRequestError, BaseError } from '@errors';
+
 import { AuthController } from './AuthController';
 
 jest.mock('passport');
@@ -25,17 +31,17 @@ describe('AuthController', () => {
   describe('register', () => {
     it('should respond with success if user is registered', async () => {
       // Arrange
-      const user = {
+      const user = UserDTO.fromEntity({
         id: '123',
         email: 'test@example.com',
-        role: 'user',
-        created_at: '2025-03-09T00:00:00Z',
-      };
+        role: UserRole.GUEST,
+        created_at: new Date('2021-01-01T00:00:00Z'),
+      } as User);
 
       (passport.authenticate as jest.Mock).mockImplementation(
-        (strategy: string, options: any, callback: Function) => {
+        (_strategy: string, _options: any, callback: Function) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          return (req: Request, res: Response, next: NextFunction) => {
+          return (_req: Request, _res: Response, _next: NextFunction) => {
             callback(null, user, null);
           };
         },
@@ -50,19 +56,19 @@ describe('AuthController', () => {
         id: user.id,
         email: user.email,
         role: user.role,
-        createdAt: user.created_at,
+        createdAt: user.createdAt,
       });
     });
 
-    it('should return a 500 error if an error occurs with error message if an error message is provided', async () => {
+    it('should call next with an error if passport authentication fails', async () => {
       // Arrange
-      const error = new Error('Internal Server Error');
+      const authError = new BaseError('Authentication failed', 401);
 
       (passport.authenticate as jest.Mock).mockImplementation(
-        (strategy: string, options: any, callback: Function) => {
+        (_strategy: string, _options: any, callback: Function) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          return (req: Request, res: Response, next: NextFunction) => {
-            callback(error, null, null);
+          return (_req: Request, _res: Response, _next: NextFunction) => {
+            callback(authError, false, null);
           };
         },
       );
@@ -71,17 +77,18 @@ describe('AuthController', () => {
       await authController.register(req as Request, res as Response, next);
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: error.message, code: 500 });
+      expect(next).toHaveBeenCalledWith(authError);
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
     });
 
-    it('should return a 500 error if an error occurs with default message if an error message is not provided', async () => {
+    it('should call next with BadRequestError if user is not returned', async () => {
       // Arrange
       (passport.authenticate as jest.Mock).mockImplementation(
-        (strategy: string, options: any, callback: Function) => {
+        (_strategy: string, _options: any, callback: Function) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          return (req: Request, res: Response, next: NextFunction) => {
-            callback(new Error(), null, null);
+          return (_req: Request, _res: Response, _next: NextFunction) => {
+            callback(null, false, null);
           };
         },
       );
@@ -90,48 +97,26 @@ describe('AuthController', () => {
       await authController.register(req as Request, res as Response, next);
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Registration failed', code: 500 });
+      expect(next).toHaveBeenCalledWith(new BadRequestError('Registration failed'));
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
     });
 
-    it('should return a 400 error with info message if user is not registered and info message is provided', async () => {
+    it('should call next with an unexpected error if something goes wrong', async () => {
       // Arrange
-      const info = { message: 'User already exists' };
+      const unexpectedError = new Error('Unexpected error');
 
-      (passport.authenticate as jest.Mock).mockImplementation(
-        (strategy: string, options: any, callback: Function) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          return (req: Request, res: Response, next: NextFunction) => {
-            callback(null, null, info);
-          };
-        },
-      );
+      jest.spyOn(passport, 'authenticate').mockImplementation(() => {
+        throw unexpectedError;
+      });
 
       // Act
       await authController.register(req as Request, res as Response, next);
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: info.message, code: 400 });
-    });
-
-    it('should return a 400 error and default message if user is not registered and info message is not provided', async () => {
-      // Arrange
-      (passport.authenticate as jest.Mock).mockImplementation(
-        (strategy: string, options: any, callback: Function) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          return (req: Request, res: Response, next: NextFunction) => {
-            callback(null, null, null);
-          };
-        },
-      );
-
-      // Act
-      await authController.register(req as Request, res as Response, next);
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Registration failed', code: 400 });
+      expect(next).toHaveBeenCalledWith(unexpectedError);
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 });

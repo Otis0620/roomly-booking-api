@@ -53,8 +53,8 @@ module.exports = {
     '^@lib/helpers/(.*)$': '<rootDir>/src/lib/helpers/$1',
     '^@lib/helpers$': '<rootDir>/src/lib/helpers/index',
 
-    '^dtos/(.*)$': '<rootDir>/src/dtos/$1',
-    '^dtos$': '<rootDir>/src/dtos/index',
+    '^@dtos/(.*)$': '<rootDir>/src/dtos/$1',
+    '^@dtos$': '<rootDir>/src/dtos/index',
 
     '^@routes/(.*)$': '<rootDir>/src/routes/$1',
     '^@routes$': '<rootDir>/src/routes/index',
