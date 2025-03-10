@@ -7,3 +7,4 @@ temp/
 .env.production
 .env.test
 .env
+coverage/

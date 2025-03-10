@@ -8,6 +8,17 @@ module.exports = {
   },
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: './coverage',
+  coveragePathIgnorePatterns: [
+    '/src/enums/',
+    '/src/validators/',
+    '/src/config/',
+    '/src/migrations/',
+    '/src/routes/',
+    '/src/entities/',
+    '/src/data-source.ts',
+    '/src/index.ts',
+    '/src/test/',
+  ],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
   moduleNameMapper: {
