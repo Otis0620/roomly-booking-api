@@ -37,13 +37,11 @@ passport.use(
 
         return done(null, user);
       } catch (err: any) {
-        console.error('Passport local-signup error:', err);
-
         if (err.status) {
           return done(err, false);
         }
 
-        return done(new InternalServerError('An unexpected error occurred'), false);
+        return done(new InternalServerError('Internal Server Error'), false);
       }
     },
   ),

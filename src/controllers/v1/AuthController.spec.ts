@@ -13,6 +13,7 @@ describe('AuthController', () => {
 
   beforeEach(() => {
     authController = new AuthController();
+
     req = {} as Request;
     res = {
       status: jest.fn().mockReturnThis(),
@@ -22,7 +23,7 @@ describe('AuthController', () => {
   });
 
   describe('register', () => {
-    it('should respond with success if user is registered', () => {
+    it('should respond with success if user is registered', async () => {
       // Arrange
       const user = {
         id: '123',
@@ -41,7 +42,7 @@ describe('AuthController', () => {
       );
 
       // Act
-      authController.register(req as Request, res as Response, next);
+      await authController.register(req as Request, res as Response, next);
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(201);
@@ -53,7 +54,7 @@ describe('AuthController', () => {
       });
     });
 
-    it('should return a 500 error if an error occurs with error message if an error message is provided', () => {
+    it('should return a 500 error if an error occurs with error message if an error message is provided', async () => {
       // Arrange
       const error = new Error('Internal Server Error');
 
@@ -67,14 +68,14 @@ describe('AuthController', () => {
       );
 
       // Act
-      authController.register(req as Request, res as Response, next);
+      await authController.register(req as Request, res as Response, next);
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({ error: error.message, code: 500 });
     });
 
-    it('should return a 500 error if an error occurs with default message if an error message is not provided', () => {
+    it('should return a 500 error if an error occurs with default message if an error message is not provided', async () => {
       // Arrange
       (passport.authenticate as jest.Mock).mockImplementation(
         (strategy: string, options: any, callback: Function) => {
@@ -86,14 +87,14 @@ describe('AuthController', () => {
       );
 
       // Act
-      authController.register(req as Request, res as Response, next);
+      await authController.register(req as Request, res as Response, next);
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({ error: 'Registration failed', code: 500 });
     });
 
-    it('should return a 400 error with info message if user is not registered and info message is provided', () => {
+    it('should return a 400 error with info message if user is not registered and info message is provided', async () => {
       // Arrange
       const info = { message: 'User already exists' };
 
@@ -107,14 +108,14 @@ describe('AuthController', () => {
       );
 
       // Act
-      authController.register(req as Request, res as Response, next);
+      await authController.register(req as Request, res as Response, next);
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ error: info.message, code: 400 });
     });
 
-    it('should return a 400 error and default message if user is not registered and info message is not provided', () => {
+    it('should return a 400 error and default message if user is not registered and info message is not provided', async () => {
       // Arrange
       (passport.authenticate as jest.Mock).mockImplementation(
         (strategy: string, options: any, callback: Function) => {
@@ -126,7 +127,7 @@ describe('AuthController', () => {
       );
 
       // Act
-      authController.register(req as Request, res as Response, next);
+      await authController.register(req as Request, res as Response, next);
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(400);

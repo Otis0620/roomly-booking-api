@@ -42,8 +42,14 @@
          "@lib/validators/*": ["src/lib/validators/*"],
          "@lib/validators": ["src/lib/validators/index"],
          
+         "@lib/helpers/*": ["src/lib/helpers/*"],
+         "@lib/helpers": ["src/lib/helpers/index"],
+         
          "@routes/*": ["src/routes/*"],
          "@routes": ["src/routes/index"],
+         
+         "@dtos/*": ["src/dtos/*"],
+         "@dtos": ["src/dtos/index"],
       }
    }
 }

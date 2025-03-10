@@ -17,9 +17,10 @@ AppDataSource.initialize()
     app.use(helmet());
     app.use(bodyParser.json());
     app.use(passport.initialize());
-    app.use(errorHandler);
 
     app.use('/api', apiRoutes);
+
+    app.use(errorHandler);
 
     app.listen(3000, () => {
       console.log('Express server has started on port 3000');

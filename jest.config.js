@@ -50,6 +50,12 @@ module.exports = {
     '^@lib/validators/(.*)$': '<rootDir>/src/lib/validators/$1',
     '^@lib/validators$': '<rootDir>/src/lib/validators/index',
 
+    '^@lib/helpers/(.*)$': '<rootDir>/src/lib/helpers/$1',
+    '^@lib/helpers$': '<rootDir>/src/lib/helpers/index',
+
+    '^dtos/(.*)$': '<rootDir>/src/dtos/$1',
+    '^dtos$': '<rootDir>/src/dtos/index',
+
     '^@routes/(.*)$': '<rootDir>/src/routes/$1',
     '^@routes$': '<rootDir>/src/routes/index',
   },

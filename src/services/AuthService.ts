@@ -4,8 +4,8 @@ import { inject, injectable } from 'inversify';
 import { UserRole } from '@lib/types';
 
 import { DEPENDENCY_IDENTIFIERS } from '@config';
-import { User } from '@entities';
-import { ConflictError } from '@errors';
+import { UserDTO } from '@dtos';
+import { BadRequestError } from '@errors';
 import { IUserRepository } from '@repositories';
 
 @injectable()
@@ -14,11 +14,11 @@ export class AuthService {
     @inject(DEPENDENCY_IDENTIFIERS.IUserRepository) private userRepository: IUserRepository,
   ) {}
 
-  async register(email: string, password: string, role: UserRole): Promise<User> {
+  async register(email: string, password: string, role: UserRole): Promise<UserDTO> {
     const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
-      throw new ConflictError('Email already exists');
+      throw new BadRequestError('Registration failed');
     }
 
     const saltRounds = 10;
@@ -26,6 +26,6 @@ export class AuthService {
 
     const user = await this.userRepository.create({ email, password_hash, role });
 
-    return user;
+    return UserDTO.fromEntity(user);
   }
 }
