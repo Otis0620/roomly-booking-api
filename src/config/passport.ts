@@ -1,7 +1,8 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 
-import { UserRole } from '@enums';
+import { UserRole } from '@lib/types';
+
 import { BadRequestError, InternalServerError } from '@errors';
 import { AuthService } from '@services';
 import { registerUserValidator } from '@validators';

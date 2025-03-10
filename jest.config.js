@@ -9,7 +9,7 @@ module.exports = {
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: [
-    '/src/enums/',
+    '/src/lib/types/',
     '/src/validators/',
     '/src/config/',
     '/src/migrations/',
@@ -41,8 +41,8 @@ module.exports = {
     '^@config/(.*)$': '<rootDir>/src/config/$1',
     '^@config$': '<rootDir>/src/config/index',
 
-    '^@enums/(.*)$': '<rootDir>/src/enums/$1',
-    '^@enums$': '<rootDir>/src/enums/index',
+    '^@lib/types/(.*)$': '<rootDir>/src/lib/types/$1',
+    '^@lib/types$': '<rootDir>/src/lib/types/index',
 
     '^@errors/(.*)$': '<rootDir>/src/errors/$1',
     '^@errors$': '<rootDir>/src/errors/index',

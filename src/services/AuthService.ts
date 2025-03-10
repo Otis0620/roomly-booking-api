@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
 import { inject, injectable } from 'inversify';
 
+import { UserRole } from '@lib/types';
+
 import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { User } from '@entities';
-import { UserRole } from '@enums';
 import { ConflictError } from '@errors';
 import { IUserRepository } from '@repositories';
 
