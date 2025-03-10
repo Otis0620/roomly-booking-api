@@ -22,7 +22,7 @@ export class AuthController {
       });
 
       if (!user) {
-        throw new BadRequestError('Registration failed');
+        throw new BadRequestError();
       }
 
       res.status(201).json(user);

@@ -26,7 +26,7 @@ passport.use(
         const { error, value } = registerUserValidator.validate(req.body);
 
         if (error) {
-          return done(new BadRequestError('Invalid input'), false);
+          return done(new BadRequestError(), false);
         }
 
         const { role } = value;
@@ -41,7 +41,7 @@ passport.use(
           return done(err, false);
         }
 
-        return done(new InternalServerError('Internal Server Error'), false);
+        return done(new InternalServerError(), false);
       }
     },
   ),

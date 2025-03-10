@@ -97,7 +97,7 @@ describe('AuthController', () => {
       await authController.register(req as Request, res as Response, next);
 
       // Assert
-      expect(next).toHaveBeenCalledWith(new BadRequestError('Registration failed'));
+      expect(next).toHaveBeenCalledWith(new BadRequestError());
       expect(res.status).not.toHaveBeenCalled();
       expect(res.json).not.toHaveBeenCalled();
     });

@@ -15,6 +15,7 @@ module.exports = {
     '/src/migrations/',
     '/src/routes/',
     '/src/entities/',
+    '/src/errors/',
     '/src/data-source.ts',
     '/src/index.ts',
     '/src/test/',

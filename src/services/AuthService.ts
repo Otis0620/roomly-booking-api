@@ -18,7 +18,7 @@ export class AuthService {
     const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
-      throw new BadRequestError('Registration failed');
+      throw new BadRequestError();
     }
 
     const saltRounds = 10;
