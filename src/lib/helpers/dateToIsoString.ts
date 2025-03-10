@@ -1,3 +1,7 @@
 export function dateToIsoString(date: Date | string): string {
-  return date instanceof Date ? date.toISOString() : String(date);
+  if (date instanceof Date) {
+    return isNaN(date.getTime()) ? 'Invalid Date' : date.toISOString();
+  }
+
+  return String(date);
 }
