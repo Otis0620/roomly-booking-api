@@ -10,7 +10,7 @@ module.exports = {
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: [
     '/src/lib/types/',
-    '/src/validators/',
+    '/src/lib/validators/',
     '/src/config/',
     '/src/migrations/',
     '/src/routes/',
@@ -47,8 +47,8 @@ module.exports = {
     '^@errors/(.*)$': '<rootDir>/src/errors/$1',
     '^@errors$': '<rootDir>/src/errors/index',
 
-    '^@validators/(.*)$': '<rootDir>/src/validators/$1',
-    '^@validators$': '<rootDir>/src/validators/index',
+    '^@lib/validators/(.*)$': '<rootDir>/src/lib/validators/$1',
+    '^@lib/validators$': '<rootDir>/src/lib/validators/index',
 
     '^@routes/(.*)$': '<rootDir>/src/routes/$1',
     '^@routes$': '<rootDir>/src/routes/index',

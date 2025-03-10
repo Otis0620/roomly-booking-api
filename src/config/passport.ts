@@ -2,10 +2,10 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 
 import { UserRole } from '@lib/types';
+import { registerUserValidator } from '@lib/validators';
 
 import { BadRequestError, InternalServerError } from '@errors';
 import { AuthService } from '@services';
-import { registerUserValidator } from '@validators';
 
 import { DEPENDENCY_IDENTIFIERS } from './dependencyIdentifiers';
 import { container } from './inversify.config';
