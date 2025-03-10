@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { HttpError } from '../errors/HttpError';
+
+import { BaseError, HttpError } from '@errors';
+
 import { errorHandler } from './errorHandler';
 
 describe('errorHandler', () => {
@@ -18,8 +20,9 @@ describe('errorHandler', () => {
 
   it('should handle errors with custom status code and message', () => {
     // Arrange
-    const mockError: HttpError = new Error('Not Found') as HttpError;
-    mockError.status = 404;
+    const mockError: HttpError = new BaseError('Not Found', 404) as HttpError;
+
+    // mockError.status = 404;
 
     // Act
     errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);

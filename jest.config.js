@@ -10,4 +10,16 @@ module.exports = {
   coverageDirectory: './coverage',
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
+  moduleNameMapper: {
+    '^@entities/(.*)$': '<rootDir>/src/entities/$1',
+    '^@repositories/(.*)$': '<rootDir>/src/repositories/$1',
+    '^@services/(.*)$': '<rootDir>/src/services/$1',
+    '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',
+    '^@middleware/(.*)$': '<rootDir>/src/middleware/$1',
+    '^@config/(.*)$': '<rootDir>/src/config/$1',
+    '^@enums/(.*)$': '<rootDir>/src/enums/$1',
+    '^@errors/(.*)$': '<rootDir>/src/errors/$1',
+    '^@validators/(.*)$': '<rootDir>/src/validators/$1',
+    '^@routes/(.*)$': '<rootDir>/src/routes/$1',
+  },
 };

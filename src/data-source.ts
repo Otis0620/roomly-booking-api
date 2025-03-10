@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { DataSource } from 'typeorm';
 import { config as configureEnvironment } from 'dotenv';
+import { DataSource } from 'typeorm';
 
 configureEnvironment();
 

@@ -10,6 +10,40 @@
       "outDir": "./build",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": "./",
+      "paths": {
+         "@entities/*": ["src/entities/*"],
+         "@entities": ["src/entities/index"],
+         
+         "@repositories/*": ["src/repositories/*"],
+         "@repositories": ["src/repositories/index"],
+         
+         "@services/*": ["src/services/*"],
+         "@services": ["src/services/index"],
+         
+         "@controllers/*": ["src/controllers/*"],
+         "@controllers": ["src/controllers/index"],
+         
+         "@middleware/*": ["src/middleware/*"],
+         "@middleware": ["src/middleware/index"],
+         
+         "@config/*": ["src/config/*"],
+         "@config": ["src/config/index"],
+         
+         "@enums/*": ["src/enums/*"],
+         "@enums": ["src/enums/index"],
+         
+         "@errors/*": ["src/errors/*"],
+         "@errors": ["src/errors/index"],
+         
+         "@validators/*": ["src/validators/*"],
+         "@validators": ["src/validators/index"],
+         
+         "@routes/*": ["src/routes/*"],
+         "@routes": ["src/routes/index"],
+      }
    }
 }
