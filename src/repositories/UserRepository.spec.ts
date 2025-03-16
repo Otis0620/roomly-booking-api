@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import { DEPENDENCY_IDENTIFIERS } from '@config';
-import { User } from '@entities';
 import { Container } from 'inversify';
 import { Repository, DataSource } from 'typeorm';
 
-import { UserRole } from '@lib/types/User';
-import { IUserRepository } from '@repositories/IUserRepository';
-import { UserRepository } from '@repositories/UserRepository';
+import { UserRole } from '@lib/types';
+
+import { DEPENDENCY_IDENTIFIERS } from '@config';
+import { User } from '@entities';
+import { IUserRepository, UserRepository } from '@repositories';
 
 describe('UserRepository', () => {
   let userRepository: IUserRepository;

@@ -1,5 +1,6 @@
 module.exports = [
   {
+    ignores: ['src/migrations/**'],
     files: ['**/*.{js,ts,tsx}'],
     languageOptions: {
       parser: require('@typescript-eslint/parser'),

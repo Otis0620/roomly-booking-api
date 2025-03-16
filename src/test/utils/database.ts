@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { DataSource } from 'typeorm';
 import { config as configureEnvironment } from 'dotenv';
+import { DataSource } from 'typeorm';
 
 configureEnvironment({ path: '.env.test' });
 
@@ -23,6 +23,7 @@ export const setupTestDatabase = async (): Promise<DataSource> => {
     if (TestDataSource.isInitialized) {
       await TestDataSource.destroy();
     }
+
     return await TestDataSource.initialize();
   } catch (error) {
     console.error('Error initializing test database:', error);
@@ -44,8 +45,10 @@ export const clearDatabase = async (): Promise<void> => {
   }
 
   const entities = TestDataSource.entityMetadatas;
+
   for (const entity of entities) {
     const repository = TestDataSource.getRepository(entity.name);
+
     await repository.clear();
   }
 };
