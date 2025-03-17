@@ -22,9 +22,9 @@ export class AuthService {
     }
 
     const saltRounds = 10;
-    const password_hash = await bcrypt.hash(password, saltRounds);
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    const user = await this.userRepository.create({ email, password_hash, role });
+    const user = await this.userRepository.create({ email, password_hash: passwordHash, role });
 
     return UserDTO.fromEntity(user);
   }
