@@ -1,9 +1,17 @@
-// Global setup for all tests
+import 'reflect-metadata';
+import {
+  setupTestDatabase,
+  clearDatabase,
+  closeTestDatabase,
+} from './src/test/utils/setup-database';
+
 beforeAll(async () => {
-  // This will be executed once before all test suites
   process.env.NODE_ENV = 'test';
+
+  await setupTestDatabase();
 });
 
 afterAll(async () => {
-  // Global teardown if needed
+  await clearDatabase();
+  await closeTestDatabase();
 });

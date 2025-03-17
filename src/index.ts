@@ -1,27 +1,8 @@
-import bodyParser from 'body-parser';
-import express from 'express';
-import helmet from 'helmet';
-import passport from 'passport';
-
-import { errorHandler } from '@middleware';
-import apiRoutes from '@routes';
-
-import { AppDataSource } from './data-source';
-
-import './config/passport';
+import { AppDataSource } from '../typeorm.config';
+import app from './app';
 
 AppDataSource.initialize()
   .then(() => {
-    const app = express();
-
-    app.use(helmet());
-    app.use(bodyParser.json());
-    app.use(passport.initialize());
-
-    app.use('/api', apiRoutes);
-
-    app.use(errorHandler);
-
     app.listen(3000, () => {
       console.log('Express server has started on port 3000');
     });

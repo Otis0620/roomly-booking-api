@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import { inject, injectable } from 'inversify';
 
-import { UserRole } from '@lib/types';
-
 import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { UserDTO } from '@dtos';
 import { BadRequestError } from '@errors';
 import { IUserRepository } from '@repositories';
+
+import { UserRole } from '@lib/types';
 
 @injectable()
 export class AuthService {

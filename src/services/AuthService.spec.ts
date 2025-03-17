@@ -1,13 +1,13 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 
-import { UserRole } from '@lib/types';
-
 import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { UserDTO } from '@dtos';
 import { User } from '@entities';
 import { BadRequestError } from '@errors';
 import { IUserRepository } from '@repositories';
+
+import { UserRole } from '@lib/types';
 
 import { AuthService } from './AuthService';
 

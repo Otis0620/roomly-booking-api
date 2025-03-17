@@ -2,7 +2,9 @@ import 'reflect-metadata';
 import { config as configureEnvironment } from 'dotenv';
 import { DataSource } from 'typeorm';
 
-configureEnvironment();
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+
+configureEnvironment({ path: envFile });
 
 export const AppDataSource = new DataSource({
   type: 'mysql',

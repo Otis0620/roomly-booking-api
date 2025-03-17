@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 
-import { UserRole } from '@lib/types';
-
 import { UserDTO } from '@dtos';
 import { User } from '@entities';
 import { BadRequestError, BaseError } from '@errors';
+
+import { UserRole } from '@lib/types';
 
 import { AuthController } from './AuthController';
 

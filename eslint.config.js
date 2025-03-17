@@ -51,6 +51,11 @@ module.exports = [
           groups: [['builtin', 'external'], ['internal'], ['parent', 'sibling', 'index']],
           pathGroups: [
             {
+              pattern: '@**',
+              group: 'internal',
+              position: 'before',
+            },
+            {
               pattern: '@**/**',
               group: 'internal',
               position: 'before',

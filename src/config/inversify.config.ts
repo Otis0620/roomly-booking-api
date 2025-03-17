@@ -2,13 +2,13 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 import { DataSource } from 'typeorm';
 
-import { AuthController } from '@controllers/v1';
-
 import { IUserRepository, UserRepository } from '@repositories';
 import { AuthService } from '@services';
 
-import { AppDataSource } from '../data-source';
+import { AuthController } from '@controllers/v1';
+
 import { DEPENDENCY_IDENTIFIERS } from './dependencyIdentifiers';
+import { AppDataSource } from '../../typeorm.config';
 
 const container = new Container();
 

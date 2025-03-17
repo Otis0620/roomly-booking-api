@@ -1,8 +1,8 @@
-import { dateToIsoString } from '@lib/helpers';
-import { UserRole } from '@lib/types';
-
 import { UserDTO } from '@dtos';
 import { User } from '@entities';
+
+import { dateToIsoString } from '@lib/helpers';
+import { UserRole } from '@lib/types';
 
 jest.mock('@lib/helpers', () => ({
   dateToIsoString: jest.fn((date: Date) => date.toISOString()),

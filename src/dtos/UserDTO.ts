@@ -1,7 +1,7 @@
+import { User } from '@entities';
+
 import { dateToIsoString } from '@lib/helpers';
 import { UserRole } from '@lib/types';
-
-import { User } from '@entities';
 
 export class UserDTO {
   id: string;
