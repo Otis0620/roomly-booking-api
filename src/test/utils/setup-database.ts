@@ -22,7 +22,7 @@ export const closeTestDatabase = async (): Promise<void> => {
   }
 };
 
-export const clearDatabase = async (): Promise<void> => {
+export const clearTestDatabase = async (): Promise<void> => {
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize();
   }

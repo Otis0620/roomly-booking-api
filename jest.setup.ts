@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {
   setupTestDatabase,
-  clearDatabase,
+  clearTestDatabase,
   closeTestDatabase,
 } from './src/test/utils/setup-database';
 
@@ -12,6 +12,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await clearDatabase();
+  await clearTestDatabase();
   await closeTestDatabase();
 });
