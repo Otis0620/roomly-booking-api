@@ -35,10 +35,3 @@ export const clearDatabase = async (): Promise<void> => {
     await repository.clear();
   }
 };
-
-export const seedDatabase = async (): Promise<void> => {
-  // Add your seeding logic here based on your entities
-  // Example:
-  // const userRepository = AppDataSource.getRepository(User);
-  // await userRepository.save({ name: 'Test User', email: 'test@example.com' });
-};
