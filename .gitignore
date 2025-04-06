@@ -5,6 +5,6 @@ build/
 tmp/
 temp/
 .env.production
+.env.dev
 .env.test
-.env
 coverage/

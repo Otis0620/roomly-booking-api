@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { config as configureEnvironment } from 'dotenv';
 import { DataSource } from 'typeorm';
 
-const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env.dev';
 
 configureEnvironment({ path: envFile });
 
