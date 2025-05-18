@@ -1,19 +1,22 @@
 import * as bcrypt from 'bcrypt';
-import { injectable } from 'inversify';
+import { injectable, unmanaged } from 'inversify';
 
 import { ICryptoManager } from './ICryptoManager';
+import { ICryptoProvider } from './ICryptoProvider';
 
 @injectable()
 export class BcryptManager implements ICryptoManager {
+  constructor(@unmanaged() private readonly cryptoProvider: ICryptoProvider = bcrypt) {}
+
   hash(data: string, saltRounds: number): Promise<string> {
-    return bcrypt.hash(data, saltRounds);
+    return this.cryptoProvider.hash(data, saltRounds);
   }
 
   genSalt(rounds: number): Promise<string> {
-    return bcrypt.genSalt(rounds);
+    return this.cryptoProvider.genSalt(rounds);
   }
 
   compare(data: string, encrypted: string): Promise<boolean> {
-    return bcrypt.compare(data, encrypted);
+    return this.cryptoProvider.compare(data, encrypted);
   }
 }
