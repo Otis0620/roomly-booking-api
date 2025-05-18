@@ -1,4 +1,5 @@
-import { AppDataSource } from '../typeorm.config';
+import { AppDataSource } from '@config';
+
 import app from './app';
 
 AppDataSource.initialize()

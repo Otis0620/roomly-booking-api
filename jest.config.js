@@ -53,6 +53,9 @@ module.exports = {
     '^@lib/helpers/(.*)$': '<rootDir>/src/lib/helpers/$1',
     '^@lib/helpers$': '<rootDir>/src/lib/helpers/index',
 
+    '^@lib/crypto/(.*)$': '<rootDir>/src/lib/crypto/$1',
+    '^@lib/crypto$': '<rootDir>/src/lib/crypto/index',
+
     '^@dtos/(.*)$': '<rootDir>/src/dtos/$1',
     '^@dtos$': '<rootDir>/src/dtos/index',
 

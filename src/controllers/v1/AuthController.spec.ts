@@ -9,8 +9,6 @@ import { UserRole } from '@lib/types';
 
 import { AuthController } from './AuthController';
 
-jest.mock('passport');
-
 describe('AuthController', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -20,32 +18,46 @@ describe('AuthController', () => {
   beforeEach(() => {
     authController = new AuthController();
 
-    req = {} as Request;
+    req = {
+      body: {
+        email: 'test@example.com',
+        password: 'securepassword',
+        role: 'guest',
+      },
+    } as Partial<Request>;
+
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
+
     next = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('register', () => {
     it('should respond with success if user is registered', async () => {
       // Arrange
-      const user = UserDTO.fromEntity({
+      const userEntity = {
         id: '123',
         email: 'test@example.com',
         role: UserRole.GUEST,
         created_at: new Date('2021-01-01T00:00:00Z'),
-      } as User);
+      } as User;
 
-      (passport.authenticate as jest.Mock).mockImplementation(
-        (_strategy: string, _options: any, callback: Function) => {
+      const user = UserDTO.fromEntity(userEntity);
+
+      jest
+        .spyOn(passport, 'authenticate')
+        .mockImplementation((_strategy: string, _options: any, callback: Function) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           return (_req: Request, _res: Response, _next: NextFunction) => {
             callback(null, user, null);
           };
-        },
-      );
+        });
 
       // Act
       await authController.register(req as Request, res as Response, next);
@@ -64,14 +76,14 @@ describe('AuthController', () => {
       // Arrange
       const authError = new BaseError('Authentication failed', 401);
 
-      (passport.authenticate as jest.Mock).mockImplementation(
-        (_strategy: string, _options: any, callback: Function) => {
+      jest
+        .spyOn(passport, 'authenticate')
+        .mockImplementation((_strategy: string, _options: any, callback: Function) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           return (_req: Request, _res: Response, _next: NextFunction) => {
             callback(authError, false, null);
           };
-        },
-      );
+        });
 
       // Act
       await authController.register(req as Request, res as Response, next);
@@ -84,20 +96,20 @@ describe('AuthController', () => {
 
     it('should call next with BadRequestError if user is not returned', async () => {
       // Arrange
-      (passport.authenticate as jest.Mock).mockImplementation(
-        (_strategy: string, _options: any, callback: Function) => {
+      jest
+        .spyOn(passport, 'authenticate')
+        .mockImplementation((_strategy: string, _options: any, callback: Function) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           return (_req: Request, _res: Response, _next: NextFunction) => {
             callback(null, false, null);
           };
-        },
-      );
+        });
 
       // Act
       await authController.register(req as Request, res as Response, next);
 
       // Assert
-      expect(next).toHaveBeenCalledWith(new BadRequestError());
+      expect(next).toHaveBeenCalledWith(expect.any(BadRequestError));
       expect(res.status).not.toHaveBeenCalled();
       expect(res.json).not.toHaveBeenCalled();
     });

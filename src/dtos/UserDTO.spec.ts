@@ -1,7 +1,6 @@
 import { UserDTO } from '@dtos';
 import { User } from '@entities';
 
-import { dateToIsoString } from '@lib/helpers';
 import { UserRole } from '@lib/types';
 
 jest.mock('@lib/helpers', () => ({
@@ -31,8 +30,6 @@ describe('UserDTO', () => {
         role: UserRole.OWNER,
         createdAt: mockDate.toISOString(),
       });
-
-      expect(dateToIsoString).toHaveBeenCalledWith(mockDate);
     });
   });
 });

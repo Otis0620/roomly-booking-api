@@ -31,7 +31,7 @@ passport.use(
 
         const { role } = value;
 
-        const userRole = role === 'owner' ? UserRole.OWNER : UserRole.GUEST;
+        const userRole = role === UserRole.OWNER ? UserRole.OWNER : UserRole.GUEST;
 
         const user = await authService.register(email, password, userRole);
 

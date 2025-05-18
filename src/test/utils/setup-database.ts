@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 
-import { AppDataSource } from '../../../typeorm.config';
+import { AppDataSource } from '@config';
 
 export const setupTestDatabase = async (): Promise<DataSource> => {
   try {

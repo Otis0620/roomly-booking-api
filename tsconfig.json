@@ -44,6 +44,9 @@
          
          "@lib/helpers/*": ["src/lib/helpers/*"],
          "@lib/helpers": ["src/lib/helpers/index"],
+
+         "@lib/cyrpto/*": ["src/lib/crypto/*"],
+         "@lib/crypto": ["src/lib/crypto/index"],
          
          "@routes/*": ["src/routes/*"],
          "@routes": ["src/routes/index"],
