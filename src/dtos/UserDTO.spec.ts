@@ -10,7 +10,6 @@ jest.mock('@lib/helpers', () => ({
 describe('UserDTO', () => {
   describe('fromEntity', () => {
     it('should correctly map a User entity to a UserDTO', () => {
-      // Arrange
       const mockDate = new Date('2023-01-01T12:00:00Z');
 
       const userEntity: User = {
@@ -20,10 +19,8 @@ describe('UserDTO', () => {
         created_at: mockDate,
       } as User;
 
-      // Act
       const userDTO = UserDTO.fromEntity(userEntity);
 
-      // Assert
       expect(userDTO).toEqual({
         id: '123',
         email: 'test@example.com',

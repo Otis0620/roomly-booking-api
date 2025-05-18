@@ -39,7 +39,6 @@ describe('UserRepository', () => {
 
   describe('findByEmail', () => {
     it('should find a user by email', async () => {
-      // Arrange
       const mockUser: User = {
         id: '123',
         email: 'test@example.com',
@@ -50,22 +49,17 @@ describe('UserRepository', () => {
 
       repositoryMock.findOneBy.mockResolvedValue(mockUser);
 
-      // Act
       const result = await userRepository.findByEmail(mockUser.email);
 
-      // Assert
       expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ email: mockUser.email });
       expect(result).toEqual(mockUser);
     });
 
     it('should return null if no user is found', async () => {
-      // Arrange
       repositoryMock.findOneBy.mockResolvedValue(null);
 
-      // Act
       const result = await userRepository.findByEmail('notfound@example.com');
 
-      // Assert
       expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ email: 'notfound@example.com' });
       expect(result).toBeNull();
     });
@@ -73,7 +67,6 @@ describe('UserRepository', () => {
 
   describe('create', () => {
     it('should create and save a new user', async () => {
-      // Arrange
       const userData: Partial<User> = {
         email: 'new@example.com',
         password_hash: 'secure_hash',
@@ -91,10 +84,8 @@ describe('UserRepository', () => {
       repositoryMock.create.mockReturnValue(savedUser);
       repositoryMock.save.mockResolvedValue(savedUser);
 
-      // Act
       const result = await userRepository.create(userData);
 
-      // Assert
       expect(repositoryMock.create).toHaveBeenCalledWith(userData);
       expect(repositoryMock.save).toHaveBeenCalledWith(savedUser);
       expect(result).toEqual(savedUser);

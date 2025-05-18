@@ -40,7 +40,6 @@ describe('AuthController', () => {
 
   describe('register', () => {
     it('should respond with success if user is registered', async () => {
-      // Arrange
       const userEntity = {
         id: '123',
         email: 'test@example.com',
@@ -59,10 +58,8 @@ describe('AuthController', () => {
           };
         });
 
-      // Act
       await authController.register(req as Request, res as Response, next);
 
-      // Assert
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith({
         id: user.id,
@@ -73,7 +70,6 @@ describe('AuthController', () => {
     });
 
     it('should call next with an error if passport authentication fails', async () => {
-      // Arrange
       const authError = new BaseError('Authentication failed', 401);
 
       jest
@@ -85,17 +81,14 @@ describe('AuthController', () => {
           };
         });
 
-      // Act
       await authController.register(req as Request, res as Response, next);
 
-      // Assert
       expect(next).toHaveBeenCalledWith(authError);
       expect(res.status).not.toHaveBeenCalled();
       expect(res.json).not.toHaveBeenCalled();
     });
 
     it('should call next with BadRequestError if user is not returned', async () => {
-      // Arrange
       jest
         .spyOn(passport, 'authenticate')
         .mockImplementation((_strategy: string, _options: any, callback: Function) => {
@@ -105,27 +98,22 @@ describe('AuthController', () => {
           };
         });
 
-      // Act
       await authController.register(req as Request, res as Response, next);
 
-      // Assert
       expect(next).toHaveBeenCalledWith(expect.any(BadRequestError));
       expect(res.status).not.toHaveBeenCalled();
       expect(res.json).not.toHaveBeenCalled();
     });
 
     it('should call next with an unexpected error if something goes wrong', async () => {
-      // Arrange
       const unexpectedError = new Error('Unexpected error');
 
       jest.spyOn(passport, 'authenticate').mockImplementation(() => {
         throw unexpectedError;
       });
 
-      // Act
       await authController.register(req as Request, res as Response, next);
 
-      // Assert
       expect(next).toHaveBeenCalledWith(unexpectedError);
       expect(res.status).not.toHaveBeenCalled();
       expect(res.json).not.toHaveBeenCalled();

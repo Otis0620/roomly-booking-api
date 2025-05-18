@@ -19,13 +19,10 @@ describe('errorHandler', () => {
   });
 
   it('should handle errors with custom status code and message when instance of BaseError', () => {
-    // Arrange
     const mockError: HttpError = new BaseError('Not Found', 404) as HttpError;
 
-    // Act
     errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);
 
-    // Assert
     expect(mockResponse.status).toHaveBeenCalledWith(404);
     expect(mockResponse.json).toHaveBeenCalledWith({
       error: 'Not Found',
@@ -34,13 +31,10 @@ describe('errorHandler', () => {
   });
 
   it('should handle errors with default 500 status code when not an instance of BaseError', () => {
-    // Arrange
     const mockError: HttpError = new Error('Something went wrong') as HttpError;
 
-    // Act
     errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);
 
-    // Assert
     expect(mockResponse.status).toHaveBeenCalledWith(500);
     expect(mockResponse.json).toHaveBeenCalledWith({
       error: 'Internal Server Error',
