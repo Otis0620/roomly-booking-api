@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import jwt from 'jsonwebtoken';
 
 import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { UserDTO } from '@dtos';
@@ -9,6 +8,7 @@ import { BadRequestError } from '@errors';
 import { IUserRepository } from '@repositories';
 
 import { ICryptoManager } from '@lib/cyrpto/ICryptoManager';
+import { IJwtManager } from '@lib/jwt';
 import { UserRole } from '@lib/types';
 
 import { AuthService } from './AuthService';
@@ -17,6 +17,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let userRepositoryMock: jest.Mocked<IUserRepository>;
   let cryptoManagerMock: jest.Mocked<ICryptoManager>;
+  let jwtManagerMock: jest.Mocked<IJwtManager>;
   let container: Container;
 
   beforeEach(() => {
@@ -35,6 +36,12 @@ describe('AuthService', () => {
       compare: jest.fn(),
     };
 
+    jwtManagerMock = {
+      sign: jest.fn(),
+      verify: jest.fn(),
+      decode: jest.fn(),
+    };
+
     container.bind<AuthService>(DEPENDENCY_IDENTIFIERS.AuthService).to(AuthService);
     container
       .bind<IUserRepository>(DEPENDENCY_IDENTIFIERS.IUserRepository)
@@ -42,6 +49,7 @@ describe('AuthService', () => {
     container
       .bind<ICryptoManager>(DEPENDENCY_IDENTIFIERS.ICryptoManager)
       .toConstantValue(cryptoManagerMock);
+    container.bind<IJwtManager>(DEPENDENCY_IDENTIFIERS.IJwtManager).toConstantValue(jwtManagerMock);
 
     authService = container.get<AuthService>(DEPENDENCY_IDENTIFIERS.AuthService);
   });
@@ -113,13 +121,13 @@ describe('AuthService', () => {
       userRepositoryMock.findByEmail.mockResolvedValueOnce(user);
       cryptoManagerMock.compare.mockResolvedValueOnce(true);
 
-      const jwtSignSpy = jest.spyOn(jwt, 'sign').mockReturnValue('mocked-jwt-token');
+      jwtManagerMock.sign.mockReturnValue('mocked-jwt-token');
 
       const result = await authService.login(email, password);
 
       expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
       expect(cryptoManagerMock.compare).toHaveBeenCalledWith(password, user.password_hash);
-      expect(jwtSignSpy).toHaveBeenCalledWith(
+      expect(jwtManagerMock.sign).toHaveBeenCalledWith(
         { id: user.id, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: '1h' },

@@ -56,6 +56,9 @@ module.exports = {
     '^@lib/crypto/(.*)$': '<rootDir>/src/lib/crypto/$1',
     '^@lib/crypto$': '<rootDir>/src/lib/crypto/index',
 
+    '^@lib/jwt/(.*)$': '<rootDir>/src/lib/jwt/$1',
+    '^@lib/jwt$': '<rootDir>/src/lib/jwt/index',
+
     '^@dtos/(.*)$': '<rootDir>/src/dtos/$1',
     '^@dtos$': '<rootDir>/src/dtos/index',
 

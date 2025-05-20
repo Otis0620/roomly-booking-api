@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import jwt from 'jsonwebtoken';
 
 import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { UserDTO } from '@dtos';
@@ -7,6 +6,7 @@ import { BadRequestError } from '@errors';
 import { IUserRepository } from '@repositories';
 
 import { ICryptoManager } from '@lib/crypto';
+import { IJwtManager } from '@lib/jwt';
 import { UserLoginResponse, UserRole } from '@lib/types';
 
 @injectable()
@@ -17,6 +17,7 @@ export class AuthService {
   constructor(
     @inject(DEPENDENCY_IDENTIFIERS.IUserRepository) private userRepository: IUserRepository,
     @inject(DEPENDENCY_IDENTIFIERS.ICryptoManager) private cryptoManager: ICryptoManager,
+    @inject(DEPENDENCY_IDENTIFIERS.IJwtManager) private jwtManager: IJwtManager,
   ) {}
 
   async register(email: string, password: string, role: UserRole): Promise<UserDTO> {
@@ -44,9 +45,11 @@ export class AuthService {
 
     const userDTO = UserDTO.fromEntity(user);
 
-    const token = jwt.sign({ id: userDTO.id, role: userDTO.role }, process.env.JWT_SECRET, {
-      expiresIn: this.loginExpiration,
-    });
+    const token = this.jwtManager.sign(
+      { id: userDTO.id, role: userDTO.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: this.loginExpiration },
+    );
 
     return { user: userDTO, token };
   }

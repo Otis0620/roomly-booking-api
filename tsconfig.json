@@ -48,6 +48,9 @@
          "@lib/cyrpto/*": ["src/lib/crypto/*"],
          "@lib/crypto": ["src/lib/crypto/index"],
          
+         "@lib/jwt/*": ["src/lib/jwt/*"],
+         "@lib/jwt": ["src/lib/jwt/index"],
+         
          "@routes/*": ["src/routes/*"],
          "@routes": ["src/routes/index"],
          
