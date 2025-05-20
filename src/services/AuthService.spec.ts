@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-
 import { Container } from 'inversify';
+import jwt from 'jsonwebtoken';
 
 import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { UserDTO } from '@dtos';
@@ -50,47 +50,116 @@ describe('AuthService', () => {
     jest.clearAllMocks();
   });
 
-  it('should register a new user', async () => {
-    const email = 'test@example.com';
-    const password = 'mypassword';
-    const role = UserRole.GUEST;
+  describe('register', () => {
+    it('should register a new user', async () => {
+      const email = 'test@example.com';
+      const password = 'mypassword';
+      const role = UserRole.GUEST;
 
-    const user: User = {
-      id: 'u1',
-      email,
-      password_hash: 'mocked_hash',
-      role,
-      created_at: new Date(),
-    };
+      const user: User = {
+        id: 'u1',
+        email,
+        password_hash: 'mocked_hash',
+        role,
+        created_at: new Date(),
+      };
 
-    userRepositoryMock.findByEmail.mockResolvedValueOnce(null);
-    userRepositoryMock.create.mockResolvedValueOnce(user);
-    cryptoManagerMock.hash.mockResolvedValueOnce(password);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(null);
+      userRepositoryMock.create.mockResolvedValueOnce(user);
+      cryptoManagerMock.hash.mockResolvedValueOnce(password);
 
-    const result = await authService.register(email, password, role);
+      const result = await authService.register(email, password, role);
 
-    expect(cryptoManagerMock.hash).toHaveBeenCalledWith(password, 10);
-    expect(result).toMatchObject<UserDTO>({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      createdAt: user.created_at.toISOString(),
+      expect(cryptoManagerMock.hash).toHaveBeenCalledWith(password, 10);
+      expect(result).toMatchObject<UserDTO>({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        createdAt: user.created_at.toISOString(),
+      });
+    });
+
+    it('should throw BadRequestError if user exists', async () => {
+      const email = 'test@example.com';
+      const password = 'mypassword';
+      const role = UserRole.GUEST;
+
+      userRepositoryMock.findByEmail.mockResolvedValue({
+        id: 'u2',
+        email,
+        password_hash: 'mocked_hash',
+        role,
+        created_at: new Date(),
+      });
+
+      await expect(authService.register(email, password, role)).rejects.toThrow(BadRequestError);
     });
   });
 
-  it('should throw BadRequestError if user exists', async () => {
-    const email = 'test@example.com';
-    const password = 'mypassword';
-    const role = UserRole.GUEST;
+  describe('login', () => {
+    it('should login a user and return user DTO and JWT token', async () => {
+      const email = 'test@example.com';
+      const password = 'correct-password';
+      const role = UserRole.GUEST;
 
-    userRepositoryMock.findByEmail.mockResolvedValue({
-      id: 'u2',
-      email,
-      password_hash: 'mocked_hash',
-      role,
-      created_at: new Date(),
+      const user: User = {
+        id: 'u1',
+        email,
+        password_hash: 'hashed-password',
+        role,
+        created_at: new Date(),
+      };
+
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(user);
+      cryptoManagerMock.compare.mockResolvedValueOnce(true);
+
+      const jwtSignSpy = jest.spyOn(jwt, 'sign').mockReturnValue('mocked-jwt-token');
+
+      const result = await authService.login(email, password);
+
+      expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
+      expect(cryptoManagerMock.compare).toHaveBeenCalledWith(password, user.password_hash);
+      expect(jwtSignSpy).toHaveBeenCalledWith(
+        { id: user.id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' },
+      );
+
+      expect(result?.user).toMatchObject<UserDTO>({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        createdAt: user.created_at.toISOString(),
+      });
+
+      expect(result?.token).toBe('mocked-jwt-token');
     });
 
-    await expect(authService.register(email, password, role)).rejects.toThrow(BadRequestError);
+    it('should return null if user is not found during login', async () => {
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(null);
+
+      const result = await authService.login('nonexistent@example.com', 'any-password');
+
+      expect(result).toBeNull();
+      expect(cryptoManagerMock.compare).not.toHaveBeenCalled();
+    });
+
+    it('should return null if password is incorrect', async () => {
+      const user: User = {
+        id: 'u1',
+        email: 'test@example.com',
+        password_hash: 'hashed-password',
+        role: UserRole.GUEST,
+        created_at: new Date(),
+      };
+
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(user);
+      cryptoManagerMock.compare.mockResolvedValueOnce(false);
+
+      const result = await authService.login(user.email, 'wrong-password');
+
+      expect(result).toBeNull();
+      expect(cryptoManagerMock.compare).toHaveBeenCalledWith('wrong-password', user.password_hash);
+    });
   });
 });

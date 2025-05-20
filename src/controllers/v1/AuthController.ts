@@ -5,6 +5,8 @@ import passport from 'passport';
 import { UserDTO } from '@dtos';
 import { BaseError, BadRequestError } from '@errors';
 
+import { UserLoginResponse } from '@lib/types';
+
 @injectable()
 export class AuthController {
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -26,6 +28,35 @@ export class AuthController {
       }
 
       res.status(201).json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await new Promise<{ user: UserDTO; token: string } | null>(
+        (resolve, reject) => {
+          passport.authenticate(
+            'local-login',
+            { session: false },
+            (err: BaseError, result: UserLoginResponse | false) => {
+              if (err) return reject(err);
+
+              resolve(result || null);
+            },
+          )(req, res, next);
+        },
+      );
+
+      if (!result) {
+        throw new BadRequestError();
+      }
+
+      res.status(200).json({
+        user: result.user,
+        token: result.token,
+      });
     } catch (error) {
       next(error);
     }

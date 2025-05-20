@@ -119,4 +119,81 @@ describe('AuthController', () => {
       expect(res.json).not.toHaveBeenCalled();
     });
   });
+
+  describe('login', () => {
+    it('should respond with token and user on successful login', async () => {
+      const user = {
+        id: '123',
+        email: 'test@example.com',
+        role: UserRole.GUEST,
+        createdAt: new Date().toISOString(),
+      } as UserDTO;
+
+      const token = 'mocked.jwt.token';
+
+      jest
+        .spyOn(passport, 'authenticate')
+        .mockImplementation((_strategy: string, _options: any, callback: Function) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          return (_req: Request, _res: Response, _next: NextFunction) => {
+            callback(null, { user, token });
+          };
+        });
+
+      await authController.login(req as Request, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ user, token });
+    });
+
+    it('should call next with BadRequestError if result is null', async () => {
+      jest
+        .spyOn(passport, 'authenticate')
+        .mockImplementation((_strategy: string, _options: any, callback: Function) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          return (_req: Request, _res: Response, _next: NextFunction) => {
+            callback(null, false);
+          };
+        });
+
+      await authController.login(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(BadRequestError));
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
+
+    it('should call next with error if passport returns an error', async () => {
+      const authError = new BaseError('Login failed', 401);
+
+      jest
+        .spyOn(passport, 'authenticate')
+        .mockImplementation((_strategy: string, _options: any, callback: Function) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          return (_req: Request, _res: Response, _next: NextFunction) => {
+            callback(authError, false);
+          };
+        });
+
+      await authController.login(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(authError);
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
+
+    it('should call next with an unexpected error if something goes wrong', async () => {
+      const unexpectedError = new Error('Unexpected error');
+
+      jest.spyOn(passport, 'authenticate').mockImplementation(() => {
+        throw unexpectedError;
+      });
+
+      await authController.login(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(unexpectedError);
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
+  });
 });

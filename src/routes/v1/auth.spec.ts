@@ -41,4 +41,52 @@ describe('Auth routes', () => {
       expect(code).toEqual(400);
     });
   });
+  describe('POST /api/v1/auth/login', () => {
+    const testUser = {
+      email: 'login-test@example.com',
+      password: 'secure-password',
+    };
+
+    beforeAll(async () => {
+      await request(app).post('/api/v1/auth/register').send(testUser);
+    });
+
+    it('should return 200 and a token for valid login', async () => {
+      const response = await request(app).post('/api/v1/auth/login').send(testUser);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('user');
+      expect(response.body.user).toMatchObject({ email: testUser.email });
+      expect(response.body).toHaveProperty('token');
+      expect(typeof response.body.token).toBe('string');
+    });
+
+    it('should return 400 for incorrect password', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ ...testUser, password: 'wrong-password' });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Bad Request');
+    });
+
+    it('should return 400 for missing login fields', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ email: testUser.email });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Bad Request');
+    });
+
+    it('should return 400 for non-existent user', async () => {
+      const response = await request(app).post('/api/v1/auth/login').send({
+        email: 'nonexistent@example.com',
+        password: 'any-password',
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Bad Request');
+    });
+  });
 });

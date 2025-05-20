@@ -46,3 +46,27 @@ passport.use(
     },
   ),
 );
+
+passport.use(
+  'local-login',
+  new LocalStrategy(
+    {
+      usernameField: 'email',
+      passwordField: 'password',
+      session: false,
+    },
+    async (email, password, done) => {
+      try {
+        const result = await authService.login(email, password);
+
+        if (!result) {
+          return done(new BadRequestError(), false);
+        }
+
+        return done(null, result);
+      } catch (err: any) {
+        return done(err?.status ? err : new InternalServerError(), false);
+      }
+    },
+  ),
+);
