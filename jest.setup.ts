@@ -3,7 +3,7 @@ import {
   setupTestDatabase,
   clearTestDatabase,
   closeTestDatabase,
-} from './src/test/utils/setup-database';
+} from './src/test/utils/setupDatabase';
 
 beforeAll(async () => {
   await setupTestDatabase();

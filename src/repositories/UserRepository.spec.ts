@@ -56,11 +56,43 @@ describe('UserRepository', () => {
     });
 
     it('should return null if no user is found', async () => {
+      const userEmail = 'notfound@example.com';
+
       repositoryMock.findOneBy.mockResolvedValue(null);
 
-      const result = await userRepository.findByEmail('notfound@example.com');
+      const result = await userRepository.findByEmail(userEmail);
 
-      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ email: 'notfound@example.com' });
+      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ email: userEmail });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('findById', () => {
+    it('should find a user by id', async () => {
+      const mockUser: User = {
+        id: '123',
+        email: 'test@example.com',
+        password_hash: 'hashed_password',
+        role: UserRole.GUEST,
+        created_at: new Date(),
+      };
+
+      repositoryMock.findOneBy.mockResolvedValue(mockUser);
+
+      const result = await userRepository.findById(mockUser.id);
+
+      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ id: mockUser.id });
+      expect(result).toEqual(mockUser);
+    });
+
+    it('should return null if no user is found', async () => {
+      const userId = '12345';
+
+      repositoryMock.findOneBy.mockResolvedValue(null);
+
+      const result = await userRepository.findById(userId);
+
+      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ id: userId });
       expect(result).toBeNull();
     });
   });

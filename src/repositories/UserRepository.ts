@@ -18,6 +18,10 @@ export class UserRepository implements IUserRepository {
     return await this.repository.findOneBy({ email });
   }
 
+  async findById(id: string): Promise<User | null> {
+    return await this.repository.findOneBy({ id });
+  }
+
   async create(userData: Partial<User>): Promise<User> {
     const user = this.repository.create(userData);
 

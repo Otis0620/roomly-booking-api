@@ -1,7 +1,9 @@
 import passport from 'passport';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 
 import { BadRequestError, InternalServerError } from '@errors';
+import { IUserRepository } from '@repositories';
 import { AuthService } from '@services';
 
 import { UserRole } from '@lib/types';
@@ -11,6 +13,7 @@ import { DEPENDENCY_IDENTIFIERS } from './dependencyIdentifiers';
 import { container } from './inversify.config';
 
 const authService = container.get<AuthService>(DEPENDENCY_IDENTIFIERS.AuthService);
+const userRepository = container.get<IUserRepository>(DEPENDENCY_IDENTIFIERS.IUserRepository);
 
 passport.use(
   'local-signup',
@@ -64,6 +67,29 @@ passport.use(
         }
 
         return done(null, result);
+      } catch (err: any) {
+        return done(err?.status ? err : new InternalServerError(), false);
+      }
+    },
+  ),
+);
+
+passport.use(
+  'jwt',
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET!,
+    },
+    async (payload: { id: string; role: UserRole; email?: string }, done) => {
+      try {
+        const user = await userRepository.findById(payload.id);
+
+        if (!user) {
+          return done(null, false);
+        }
+
+        return done(null, { id: user.id, email: user.email, role: user.role });
       } catch (err: any) {
         return done(err?.status ? err : new InternalServerError(), false);
       }

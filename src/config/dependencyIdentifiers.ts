@@ -5,4 +5,6 @@ export const DEPENDENCY_IDENTIFIERS = {
   IJwtManager: Symbol.for('IJwtManager'),
   AuthService: Symbol.for('AuthService'),
   AuthController: Symbol.for('AuthController'),
+  HotelController: Symbol.for('HotelController'),
+  HotelService: Symbol.for('HotelService'),
 };
