@@ -1,12 +1,11 @@
 import 'reflect-metadata';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
-import { InversifyExpressServer } from 'inversify-express-utils';
-import passport from 'passport';
 import { DataSource } from 'typeorm';
 
-import { configurePassport } from '@infra/auth';
+import { configurePassport, default as passport } from '@infra/auth';
 import { container, DEPENDENCY_IDENTIFIERS } from '@infra/di';
+import { createHttpServer } from '@infra/http/adapters';
 import { errorHandler } from '@infra/http/middleware';
 
 import '@controllers/v1';
@@ -19,23 +18,22 @@ import '@controllers/v1';
 
     configurePassport(container);
 
-    const server = new InversifyExpressServer(container, null, { rootPath: '/api' });
-
-    server.setConfig((app) => {
-      app.use(helmet());
-      app.use(bodyParser.json());
-      app.use(passport.initialize());
+    const app = createHttpServer(container, {
+      rootPath: '/api',
+      configure: (expressApp) => {
+        expressApp.use(helmet());
+        expressApp.use(bodyParser.json());
+        expressApp.use(passport.initialize());
+      },
+      configureError: (expressApp) => {
+        expressApp.use(errorHandler);
+      },
     });
 
-    server.setErrorConfig((app) => {
-      app.use(errorHandler);
-    });
-
-    const app = server.build();
     const port = Number(process.env.PORT) || 3000;
 
     app.listen(port, () => {
-      console.log(`Inversify Express server started on port ${port}`);
+      console.log(`HTTP server started on port ${port}`);
     });
 
     process.on('SIGINT', async () => {

@@ -41,10 +41,6 @@
 
          "@errors": ["src/errors"],
          "@errors/*": ["src/errors/*"],
-
-         // --- Legacy routes (to be removed once migrated) ---
-         "@routes": ["src/routes"],
-         "@routes/*": ["src/routes/*"]
       }
    }
 }
