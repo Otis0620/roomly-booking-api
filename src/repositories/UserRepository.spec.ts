@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 import { Repository, DataSource } from 'typeorm';
 
-import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { User } from '@entities';
 import { IUserRepository, UserRepository } from '@repositories';
 
+import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
 import { UserRole } from '@lib/types';
 
 describe('UserRepository', () => {

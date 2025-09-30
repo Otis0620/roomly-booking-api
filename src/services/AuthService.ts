@@ -1,10 +1,10 @@
 import { inject, injectable } from 'inversify';
 
-import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { UserDTO } from '@dtos';
 import { BadRequestError } from '@errors';
 import { IUserRepository } from '@repositories';
 
+import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
 import { ICryptoManager } from '@lib/crypto';
 import { IJwtManager } from '@lib/jwt';
 import { UserLoginResponse, UserRole } from '@lib/types';

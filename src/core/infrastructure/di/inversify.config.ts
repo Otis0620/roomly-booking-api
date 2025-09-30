@@ -6,11 +6,11 @@ import { IUserRepository, UserRepository } from '@repositories';
 import { AuthService, HotelService } from '@services';
 
 import { AuthController, HotelController } from '@controllers/v1';
+import { AppDataSource } from '@infra/db';
 import { BcryptManager, ICryptoManager } from '@lib/crypto';
 import { IJwtManager, JwtManager } from '@lib/jwt';
 
 import { DEPENDENCY_IDENTIFIERS } from './dependencyIdentifiers';
-import { AppDataSource } from './typeorm.config';
 
 const container = new Container();
 

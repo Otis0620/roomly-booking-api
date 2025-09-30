@@ -1,13 +1,13 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 
-import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { UserDTO } from '@dtos';
 import { User } from '@entities';
 import { BadRequestError } from '@errors';
 import { IUserRepository } from '@repositories';
 
-import { ICryptoManager } from '@lib/cyrpto/ICryptoManager';
+import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
+import { ICryptoManager } from '@lib/crypto';
 import { IJwtManager } from '@lib/jwt';
 import { UserRole } from '@lib/types';
 

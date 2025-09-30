@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-import { injectable } from 'inversify';
 import passport from 'passport';
 
 import { UserDTO } from '@dtos';
 import { BaseError, BadRequestError } from '@errors';
 
+import { Controller, Post } from '@infra/http/adapters';
 import { UserLoginResponse } from '@lib/types';
 
-@injectable()
+@Controller('/v1/auth')
 export class AuthController {
+  @Post('/register')
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { user } = await new Promise<{ user: UserDTO | null }>((resolve, reject) => {
@@ -33,6 +34,7 @@ export class AuthController {
     }
   }
 
+  @Post('/login')
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const result = await new Promise<{ user: UserDTO; token: string } | null>(

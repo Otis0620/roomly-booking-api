@@ -15,47 +15,36 @@
       "allowSyntheticDefaultImports": true,
       "baseUrl": "./",
       "paths": {
-         "@entities/*": ["src/entities/*"],
-         "@entities": ["src/entities/index"],
-         
-         "@repositories/*": ["src/repositories/*"],
-         "@repositories": ["src/repositories/index"],
-         
-         "@services/*": ["src/services/*"],
-         "@services": ["src/services/index"],
-         
-         "@controllers/*": ["src/controllers/*"],
-         "@controllers": ["src/controllers/index"],
-         
-         "@middleware/*": ["src/middleware/*"],
-         "@middleware": ["src/middleware/index"],
-         
-         "@config/*": ["src/config/*"],
-         "@config": ["src/config/index"],
-         
-         "@lib/types/*": ["src/lib/types/*"],
-         "@lib/types": ["src/lib/types/index"],
-         
-         "@errors/*": ["src/errors/*"],
-         "@errors": ["src/errors/index"],
-         
-         "@lib/validators/*": ["src/lib/validators/*"],
-         "@lib/validators": ["src/lib/validators/index"],
-         
-         "@lib/helpers/*": ["src/lib/helpers/*"],
-         "@lib/helpers": ["src/lib/helpers/index"],
+         // --- Infrastructure ---
+         "@infra": ["src/core/infrastructure"],
+         "@infra/*": ["src/core/infrastructure/*"],
 
-         "@lib/cyrpto/*": ["src/lib/crypto/*"],
-         "@lib/crypto": ["src/lib/crypto/index"],
-         
-         "@lib/jwt/*": ["src/lib/jwt/*"],
-         "@lib/jwt": ["src/lib/jwt/index"],
-         
-         "@routes/*": ["src/routes/*"],
-         "@routes": ["src/routes/index"],
-         
+         // --- Shared libraries ---
+         "@lib": ["src/lib"],
+         "@lib/*": ["src/lib/*"],
+
+         // --- Domain & application layers ---
+         "@entities": ["src/entities"],
+         "@entities/*": ["src/entities/*"],
+
+         "@repositories": ["src/repositories"],
+         "@repositories/*": ["src/repositories/*"],
+
+         "@services": ["src/services"],
+         "@services/*": ["src/services/*"],
+
+         "@controllers": ["src/controllers"],
+         "@controllers/*": ["src/controllers/*"],
+
+         "@dtos": ["src/dtos"],
          "@dtos/*": ["src/dtos/*"],
-         "@dtos": ["src/dtos/index"],
+
+         "@errors": ["src/errors"],
+         "@errors/*": ["src/errors/*"],
+
+         // --- Legacy routes (to be removed once migrated) ---
+         "@routes": ["src/routes"],
+         "@routes/*": ["src/routes/*"]
       }
    }
 }

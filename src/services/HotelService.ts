@@ -1,7 +1,8 @@
 import { inject, injectable } from 'inversify';
 
-import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { IUserRepository } from '@repositories';
+
+import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
 
 @injectable()
 export class HotelService {

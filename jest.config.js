@@ -9,12 +9,14 @@ module.exports = {
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: [
-    '/src/lib/types/',
-    '/src/lib/validators/',
-    '/src/config/',
+    '/node_modules/',
+    '/dist/',
+    '/src/core/infrastructure/',
+    '!/src/core/infrastructure/http/middleware/',
     '/src/migrations/',
     '/src/entities/',
     '/src/errors/',
+    '/src/lib/validators/',
     '/src/index.ts',
     '/src/test/',
     '/src/.*index\\.ts$',
@@ -23,46 +25,25 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
   moduleNameMapper: {
+    '^@infra$': '<rootDir>/src/core/infrastructure',
+    '^@infra/(.*)$': '<rootDir>/src/core/infrastructure/$1',
+    '^@http$': '<rootDir>/src/core/infrastructure/http/adapters/inversifyAdapter',
+    '^@http/(.*)$': '<rootDir>/src/core/infrastructure/http/adapters/$1',
+    '^@lib$': '<rootDir>/src/lib',
+    '^@lib/(.*)$': '<rootDir>/src/lib/$1',
+    '^@entities$': '<rootDir>/src/entities',
     '^@entities/(.*)$': '<rootDir>/src/entities/$1',
-    '^@entities$': '<rootDir>/src/entities/index',
-
+    '^@repositories$': '<rootDir>/src/repositories',
     '^@repositories/(.*)$': '<rootDir>/src/repositories/$1',
-    '^@repositories$': '<rootDir>/src/repositories/index',
-
+    '^@services$': '<rootDir>/src/services',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
-    '^@services$': '<rootDir>/src/services/index',
-
+    '^@controllers$': '<rootDir>/src/controllers',
     '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',
-    '^@controllers$': '<rootDir>/src/controllers/index',
-
-    '^@middleware/(.*)$': '<rootDir>/src/middleware/$1',
-    '^@middleware$': '<rootDir>/src/middleware/index',
-
-    '^@config/(.*)$': '<rootDir>/src/config/$1',
-    '^@config$': '<rootDir>/src/config/index',
-
-    '^@lib/types/(.*)$': '<rootDir>/src/lib/types/$1',
-    '^@lib/types$': '<rootDir>/src/lib/types/index',
-
-    '^@errors/(.*)$': '<rootDir>/src/errors/$1',
-    '^@errors$': '<rootDir>/src/errors/index',
-
-    '^@lib/validators/(.*)$': '<rootDir>/src/lib/validators/$1',
-    '^@lib/validators$': '<rootDir>/src/lib/validators/index',
-
-    '^@lib/helpers/(.*)$': '<rootDir>/src/lib/helpers/$1',
-    '^@lib/helpers$': '<rootDir>/src/lib/helpers/index',
-
-    '^@lib/crypto/(.*)$': '<rootDir>/src/lib/crypto/$1',
-    '^@lib/crypto$': '<rootDir>/src/lib/crypto/index',
-
-    '^@lib/jwt/(.*)$': '<rootDir>/src/lib/jwt/$1',
-    '^@lib/jwt$': '<rootDir>/src/lib/jwt/index',
-
+    '^@dtos$': '<rootDir>/src/dtos',
     '^@dtos/(.*)$': '<rootDir>/src/dtos/$1',
-    '^@dtos$': '<rootDir>/src/dtos/index',
-
+    '^@errors$': '<rootDir>/src/errors',
+    '^@errors/(.*)$': '<rootDir>/src/errors/$1',
+    '^@routes$': '<rootDir>/src/routes',
     '^@routes/(.*)$': '<rootDir>/src/routes/$1',
-    '^@routes$': '<rootDir>/src/routes/index',
   },
 };

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { DataSource, QueryRunner, EntityMetadata } from 'typeorm';
 
-import { AppDataSource } from '@config';
+import { AppDataSource } from '@infra/db';
 
 async function withForeignKeyChecksDisabled<Result>(
   dataSource: DataSource,

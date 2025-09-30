@@ -1,8 +1,9 @@
 import { injectable, inject } from 'inversify';
 import { DataSource, Repository } from 'typeorm';
 
-import { DEPENDENCY_IDENTIFIERS } from '@config';
 import { User } from '@entities';
+
+import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
 
 import { IUserRepository } from './IUserRepository';
 
