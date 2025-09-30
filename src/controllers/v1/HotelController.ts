@@ -5,8 +5,9 @@ import { HotelService } from '@services';
 
 import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
 import { Controller, Post } from '@infra/http/adapters';
+import { requireJwt } from '@infra/http/middleware';
 
-@Controller('/v1/hotels')
+@Controller('/v1/hotels', requireJwt)
 export class HotelController {
   constructor(
     @inject(DEPENDENCY_IDENTIFIERS.HotelService) private readonly hotelService: HotelService,
