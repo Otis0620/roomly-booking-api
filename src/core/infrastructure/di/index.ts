@@ -1,3 +1,3 @@
 export * from './dependencyIdentifiers';
 
-export * from './inversify.config';
+export { createAppContainer, getAppContainer } from './inversify.config';

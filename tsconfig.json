@@ -41,6 +41,9 @@
 
          "@errors": ["src/errors"],
          "@errors/*": ["src/errors/*"],
+         
+         "@routes": ["src/routes"],
+         "@routes/*": ["src/routes/*"]
       }
    }
 }
