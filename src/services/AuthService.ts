@@ -7,7 +7,7 @@ import { IUserRepository } from '@repositories';
 import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
 import { ICryptoManager } from '@lib/crypto';
 import { IJwtManager } from '@lib/jwt';
-import { UserLoginResponse, UserRole } from '@lib/types';
+import { AuthUser, UserRole } from '@lib/types';
 
 @injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
     @inject(DEPENDENCY_IDENTIFIERS.IJwtManager) private jwtManager: IJwtManager,
   ) {}
 
-  async register(email: string, password: string, role: UserRole): Promise<UserDTO> {
+  async register(email: string, password: string, role: UserRole): Promise<AuthUser> {
     const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
@@ -31,10 +31,10 @@ export class AuthService {
 
     const user = await this.userRepository.create({ email, password_hash: passwordHash, role });
 
-    return UserDTO.fromEntity(user);
+    return { user: UserDTO.fromEntity(user) };
   }
 
-  async login(email: string, password: string): Promise<UserLoginResponse | null> {
+  async login(email: string, password: string): Promise<AuthUser> {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) return null;

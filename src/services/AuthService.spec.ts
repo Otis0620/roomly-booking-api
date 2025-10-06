@@ -80,11 +80,13 @@ describe('AuthService', () => {
       const result = await authService.register(email, password, role);
 
       expect(cryptoManagerMock.hash).toHaveBeenCalledWith(password, 10);
-      expect(result).toMatchObject<UserDTO>({
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        createdAt: user.created_at.toISOString(),
+      expect(result).toMatchObject<{ user: UserDTO }>({
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          createdAt: user.created_at.toISOString(),
+        },
       });
     });
 
