@@ -11,8 +11,9 @@ module.exports = {
   coveragePathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
-    '/src/core/infrastructure/',
-    '!/src/core/infrastructure/http/middleware/',
+    '/src/core/infrastructure/auth',
+    '/src/core/infrastructure/db',
+    '/src/core/infrastructure/di',
     '/src/migrations/',
     '/src/entities/',
     '/src/errors/',
