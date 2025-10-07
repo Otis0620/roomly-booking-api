@@ -1,4 +1,3 @@
-// src/middleware/requireJwt.ts
 import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 
