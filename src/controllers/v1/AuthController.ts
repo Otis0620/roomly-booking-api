@@ -7,8 +7,22 @@ import { BaseError, BadRequestError } from '@errors';
 
 import { AuthUser } from '@lib/types';
 
+/**
+ * Controller responsible for handling user authentication.
+ */
 @injectable()
 export class AuthController {
+  /**
+   * Registers a new user using the `local-signup` Passport strategy.
+   *
+   * On success, returns the created user as JSON with HTTP 201.
+   * On failure, throws a {@link BadRequestError} or propagates any authentication errors.
+   *
+   * @param {Request} req - Express request object.
+   * @param {Response} res - Express response object used to send the response.
+   * @param {NextFunction} next - Express next function for passing errors.
+   * @returns {Promise<void>}
+   */
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { user } = await new Promise<{ user: UserDTO | null }>((resolve, reject) => {
@@ -33,6 +47,17 @@ export class AuthController {
     }
   }
 
+  /**
+   * Authenticates an existing user using the `local-login` Passport strategy.
+   *
+   * On success, returns the authenticated user and JWT token as JSON with HTTP 200.
+   * On failure, throws a {@link BadRequestError} or propagates any authentication errors.
+   *
+   * @param {Request} req - Express request object.
+   * @param {Response} res - Express response object used to send the response.
+   * @param {NextFunction} next - Express next function for passing errors.
+   * @returns {Promise<void>}
+   */
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const result = await new Promise<AuthUser | null>((resolve, reject) => {

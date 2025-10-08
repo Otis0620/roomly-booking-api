@@ -15,6 +15,14 @@ const container = getAppContainer();
 const authService = container.get<AuthService>(DEPENDENCY_IDENTIFIERS.AuthService);
 const userRepository = container.get<IUserRepository>(DEPENDENCY_IDENTIFIERS.IUserRepository);
 
+/**
+ * Passport Local Strategy for user registration (`local-signup`).
+ *
+ * - Validates incoming registration data using `registerUserValidator`.
+ * - Registers a new user through the `AuthService`.
+ * - Assigns role as `owner` if provided, otherwise defaults to `guest`.
+ * - Returns a {@link BadRequestError} if validation fails, or {@link InternalServerError} for unexpected issues.
+ */
 passport.use(
   'local-signup',
   new LocalStrategy(
@@ -50,6 +58,13 @@ passport.use(
   ),
 );
 
+/**
+ * Passport Local Strategy for user authentication (`local-login`).
+ *
+ * - Authenticates users using provided email and password via `AuthService`.
+ * - Returns a {@link BadRequestError} if credentials are invalid.
+ * - Returns a {@link InternalServerError} for unexpected issues.
+ */
 passport.use(
   'local-login',
   new LocalStrategy(
@@ -74,6 +89,14 @@ passport.use(
   ),
 );
 
+/**
+ * Passport JWT Strategy for token-based authentication (`jwt`).
+ *
+ * - Extracts JWT from the Authorization header as a Bearer token.
+ * - Verifies token using the configured `JWT_SECRET`.
+ * - Retrieves user by ID from the repository and attaches it to the request.
+ * - Returns `false` if user is not found, or an {@link InternalServerError} for unexpected issues.
+ */
 passport.use(
   'jwt',
   new JwtStrategy(

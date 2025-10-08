@@ -16,6 +16,17 @@ export type CreateAppContainerOptions = {
   dataSource?: DataSource;
 };
 
+/**
+ * Creates and configures a new InversifyJS dependency injection container.
+ *
+ * Binds all core application dependencies including repositories, services, controllers,
+ * and utilities such as cryptography and JWT managers. The container is configured to use
+ * transient scope by default.
+ *
+ * @param {CreateAppContainerOptions} [options] - Optional configuration overrides.
+ * @param {DataSource} [options.dataSource] - A custom TypeORM data source instance (used primarily for testing).
+ * @returns {Container} A configured InversifyJS container with all dependencies registered.
+ */
 export function createAppContainer(options: CreateAppContainerOptions = {}) {
   const container = new Container({ defaultScope: 'Transient' });
 
@@ -35,10 +46,21 @@ export function createAppContainer(options: CreateAppContainerOptions = {}) {
   return container;
 }
 
-let _appContainer: Container | null = null;
+let appContainer: Container | null = null;
 
+/**
+ * Retrieves the global InversifyJS dependency injection container instance.
+ *
+ * Initializes the container using {@link createAppContainer} on first access and
+ * reuses the same instance for subsequent calls. Ensures a single application-wide
+ * container is shared across modules.
+ *
+ * @returns {Container} The singleton InversifyJS container instance.
+ */
 export function getAppContainer() {
-  if (!_appContainer) _appContainer = createAppContainer();
+  if (!appContainer) {
+    appContainer = createAppContainer();
+  }
 
-  return _appContainer;
+  return appContainer;
 }
