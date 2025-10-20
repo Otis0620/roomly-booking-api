@@ -62,7 +62,7 @@ export class AuthService {
    * @param {string} password - Plaintext password to verify.
    * @returns {Promise<AuthUser | null>} The authenticated user and token, or `null` if invalid credentials.
    */
-  async login(email: string, password: string): Promise<AuthUser> {
+  async login(email: string, password: string): Promise<AuthUser | null> {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
