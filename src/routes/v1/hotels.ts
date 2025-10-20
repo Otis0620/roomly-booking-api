@@ -11,6 +11,9 @@ const container = getAppContainer();
 
 const hotelsController = container.get<HotelController>(DEPENDENCY_IDENTIFIERS.HotelController);
 
+/**
+ * Creates a new hotel. Requires authentication and owner role.
+ */
 router.post(
   '/',
   requireJwt,
