@@ -1,58 +1,50 @@
-import { injectable, unmanaged } from 'inversify';
-import * as JwtProvider from 'jsonwebtoken';
-
-import { IJwtManager, IJwtSignOptions } from './IJwtManager';
+import { injectable } from 'inversify';
+import * as jwt from 'jsonwebtoken';
 
 /**
- * Implementation of {@link IJwtManager} using the `jsonwebtoken` library.
- *
- * Provides methods to sign, verify, and decode JSON Web Tokens (JWT).
- * Uses dependency injection to allow the JWT provider to be replaced,
- * which is useful for testing or custom implementations.
+ * JWT token payload structure.
+ */
+export interface JwtPayload {
+  sub: string;
+  role: string;
+  [key: string]: unknown;
+}
+
+/**
+ * JWT token utility.
  */
 @injectable()
-export class JwtManager implements IJwtManager {
+export class JwtManager {
   /**
-   * Creates a new `JwtManager` instance.
+   * Signs a payload into a JWT token.
    *
-   * @param {typeof JwtProvider} [jwtProvider=JwtProvider] - The JWT provider to use.
-   * Defaults to the `jsonwebtoken` library.
+   * @param payload - Data to encode in the token
+   * @param secret - Secret key for signing
+   * @param options - Signing options
+   * @returns Signed JWT token string
    */
-  constructor(@unmanaged() private readonly jwtProvider = JwtProvider) {}
-
-  /**
-   * Signs a payload into a JWT string using the given secret and options.
-   *
-   * @template T
-   * @param {T} payload - The payload to sign.
-   * @param {string} secret - The secret key used to sign the token.
-   * @param {IJwtSignOptions} [options] - Optional JWT signing options.
-   * @returns {string} The signed JWT string.
-   */
-  sign<T extends object>(payload: T, secret: string, options?: IJwtSignOptions): string {
-    return this.jwtProvider.sign(payload, secret, options);
+  sign(payload: JwtPayload, secret: string, options?: jwt.SignOptions): string {
+    return jwt.sign(payload, secret, options);
   }
 
   /**
-   * Verifies a JWT and returns the decoded payload.
+   * Verifies a JWT token and returns the payload.
    *
-   * @template T
-   * @param {string} token - The JWT to verify.
-   * @param {string} secret - The secret key used to verify the token.
-   * @returns {T} The decoded and verified payload.
+   * @param token - JWT token to verify
+   * @param secret - Secret key used for signing
+   * @returns Decoded payload
    */
-  verify<T>(token: string, secret: string): T {
-    return this.jwtProvider.verify(token, secret) as T;
+  verify<T = JwtPayload>(token: string, secret: string): T {
+    return jwt.verify(token, secret) as T;
   }
 
   /**
-   * Decodes a JWT without verifying its signature.
+   * Decodes a JWT token without verifying the signature.
    *
-   * @template T
-   * @param {string} token - The JWT to decode.
-   * @returns {T | null} The decoded payload if successful, or `null` if decoding fails.
+   * @param token - JWT token to decode
+   * @returns Decoded payload or null if invalid
    */
-  decode<T = unknown>(token: string): T | null {
-    return this.jwtProvider.decode(token) as T | null;
+  decode<T = JwtPayload>(token: string): T | null {
+    return jwt.decode(token) as T | null;
   }
 }

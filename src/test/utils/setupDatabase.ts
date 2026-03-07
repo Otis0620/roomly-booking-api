@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { DataSource, QueryRunner, EntityMetadata } from 'typeorm';
 
-import { AppDataSource } from '@infra/db';
+import { AppDataSource } from '@infra/database/dataSource';
 
 /**
  * Executes a database operation with foreign key checks temporarily disabled.

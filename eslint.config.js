@@ -1,7 +1,9 @@
 module.exports = [
   {
-    ignores: ['src/migrations/**'],
-    files: ['**/*.{js,ts,tsx}'],
+    ignores: ['src/migrations/**', '*.config.js', 'jest.setup.ts'],
+  },
+  {
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
@@ -68,10 +70,6 @@ module.exports = [
             caseInsensitive: true,
           },
         },
-      ],
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { vars: 'all', args: 'after-used', ignoreRestSiblings: true },
       ],
       'padding-line-between-statements': [
         'error',

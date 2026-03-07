@@ -1,55 +1,30 @@
 import * as bcrypt from 'bcrypt';
-import { injectable, unmanaged } from 'inversify';
-
-import { ICryptoManager } from './ICryptoManager';
-import { ICryptoProvider } from './ICryptoProvider';
+import { injectable } from 'inversify';
 
 /**
- * Implementation of {@link ICryptoManager} using the `bcrypt` library.
- *
- * This class provides methods for hashing data, generating salts, and comparing
- * plaintext input against hashed values. It uses dependency injection to allow
- * the crypto provider to be overridden (useful for testing or alternative implementations).
+ * Password hashing utility using bcrypt.
  */
 @injectable()
-export class BcryptManager implements ICryptoManager {
+export class BcryptManager {
   /**
-   * Creates a new `BcryptManager` instance.
+   * Hashes a plain text password.
    *
-   * @param {ICryptoProvider} [cryptoProvider=bcrypt] - The crypto provider to use.
-   * Defaults to the `bcrypt` library.
+   * @param data - Plain text password to hash
+   * @param saltRounds - Number of salt rounds
+   * @returns Bcrypt hash of the password
    */
-  constructor(@unmanaged() private readonly cryptoProvider: ICryptoProvider = bcrypt) {}
-
-  /**
-   * Generates a bcrypt hash of the given data.
-   *
-   * @param {string} data - The plaintext data to hash.
-   * @param {number} saltRounds - Number of salt rounds to use in hashing.
-   * @returns {Promise<string>} A promise that resolves to the hashed value.
-   */
-  hash(data: string, saltRounds: number): Promise<string> {
-    return this.cryptoProvider.hash(data, saltRounds);
+  async hash(data: string, saltRounds: number): Promise<string> {
+    return bcrypt.hash(data, saltRounds);
   }
 
   /**
-   * Generates a salt for use in hashing.
+   * Compares a plain text password against a hash.
    *
-   * @param {number} rounds - Number of rounds to use in salt generation.
-   * @returns {Promise<string>} A promise that resolves to the generated salt.
+   * @param data - Plain text password to verify
+   * @param encrypted - Bcrypt hash to compare against
+   * @returns True if password matches, false otherwise
    */
-  genSalt(rounds: number): Promise<string> {
-    return this.cryptoProvider.genSalt(rounds);
-  }
-
-  /**
-   * Compares plaintext data to an encrypted hash.
-   *
-   * @param {string} data - The plaintext data to compare.
-   * @param {string} encrypted - The previously hashed value.
-   * @returns {Promise<boolean>} A promise that resolves to `true` if the data matches the hash, otherwise `false`.
-   */
-  compare(data: string, encrypted: string): Promise<boolean> {
-    return this.cryptoProvider.compare(data, encrypted);
+  async compare(data: string, encrypted: string): Promise<boolean> {
+    return bcrypt.compare(data, encrypted);
   }
 }

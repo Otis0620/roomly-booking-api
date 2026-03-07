@@ -1,24 +1,34 @@
-import bodyParser from 'body-parser';
-import express from 'express';
+import express, { Application } from 'express';
 import helmet from 'helmet';
+import { Container } from 'inversify';
 import passport from 'passport';
 
-import apiRoutes from '@routes';
+import { errorHandler } from '@middleware/errorHandler';
+import { createRoutes } from '@routes/routerFactory';
 
-import { errorHandler } from '@infra/http/middleware';
+/**
+ * Creates a configured Express application.
+ *
+ * This is the composition root for the HTTP layer.
+ * All dependencies flow down from the container.
+ */
+export function createApp(container: Container): Application {
+  const app = express();
 
-// Passport
-import '@infra/auth';
+  app.use(helmet());
 
-const app = express();
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-app.use(helmet());
-app.use(bodyParser.json());
+  app.use(passport.initialize());
 
-app.use(passport.initialize());
+  app.get('/health', (_req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
 
-app.use('/api', apiRoutes);
+  app.use('/api', createRoutes(container));
 
-app.use(errorHandler);
+  app.use(errorHandler);
 
-export default app;
+  return app;
+}

@@ -1,49 +1,36 @@
 {
-   "compilerOptions": {
-      "lib": [
-         "es5",
-         "es6"
-      ],
-      "target": "es5",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "outDir": "./build",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "sourceMap": true,
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "baseUrl": "./",
-      "paths": {
-         // --- Infrastructure ---
-         "@infra": ["src/core/infrastructure"],
-         "@infra/*": ["src/core/infrastructure/*"],
-
-         // --- Shared libraries ---
-         "@lib": ["src/lib"],
-         "@lib/*": ["src/lib/*"],
-
-         // --- Domain & application layers ---
-         "@entities": ["src/entities"],
-         "@entities/*": ["src/entities/*"],
-
-         "@repositories": ["src/repositories"],
-         "@repositories/*": ["src/repositories/*"],
-
-         "@services": ["src/services"],
-         "@services/*": ["src/services/*"],
-
-         "@controllers": ["src/controllers"],
-         "@controllers/*": ["src/controllers/*"],
-
-         "@dtos": ["src/dtos"],
-         "@dtos/*": ["src/dtos/*"],
-
-         "@errors": ["src/errors"],
-         "@errors/*": ["src/errors/*"],
-         
-         "@routes": ["src/routes"],
-         "@routes/*": ["src/routes/*"]
-      }
-   }
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "declaration": true,
+    "baseUrl": "./",
+    "paths": {
+      "@config/*": ["src/config/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@dtos/*": ["src/dtos/*"],
+      "@entities/*": ["src/entities/*"],
+      "@errors/*": ["src/errors/*"],
+      "@infra/*": ["src/infrastructure/*"],
+      "@lib/*": ["src/lib/*"],
+      "@middleware/*": ["src/middleware/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@routes/*": ["src/routes/*"],
+      "@services/*": ["src/services/*"],
+      "@validators/*": ["src/validators/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "coverage"]
 }
