@@ -1,0 +1,38 @@
+import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
+
+import { BaseError } from '@errors/CustomErrors';
+
+/**
+ * Global error handler middleware.
+ *
+ * Converts errors to JSON responses with appropriate HTTP status codes.
+ * Handles both application errors (BaseError subclasses) and unexpected
+ * errors. Must be registered LAST in the middleware chain.
+ *
+ * @param err - The error that was thrown
+ * @param _req - Express request (unused)
+ * @param res - Express response
+ * @param _next - Express next function (unused)
+ */
+export const errorHandler: ErrorRequestHandler = (
+  err: Error,
+  _req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction,
+): void => {
+  if (err instanceof BaseError) {
+    res.status(err.status).json({
+      error: err.message,
+      code: err.status,
+      ...(err.details && { details: err.details }),
+    });
+
+    return;
+  }
+
+  res.status(500).json({
+    error: 'Internal Server Error',
+    code: 500,
+  });
+};
