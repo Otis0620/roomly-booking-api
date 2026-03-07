@@ -49,14 +49,23 @@ export class UserRepository implements IUserRepository {
     this.repository = dataSource.getRepository(User);
   }
 
+  /**
+   * @inheritdoc
+   */
   async findByEmail(email: string): Promise<User | null> {
     return this.repository.findOneBy({ email });
   }
 
+  /**
+   * @inheritdoc
+   */
   async findById(id: string): Promise<User | null> {
     return this.repository.findOneBy({ id });
   }
 
+  /**
+   * @inheritdoc
+   */
   async create(userData: Partial<User>): Promise<User> {
     const user = this.repository.create(userData);
 
