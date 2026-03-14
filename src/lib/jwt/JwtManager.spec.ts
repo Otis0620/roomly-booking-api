@@ -1,74 +1,89 @@
-import { IJwtSignOptions } from './IJwtManager';
-import { JwtManager } from './JwtManager';
+import { JwtManager, JwtPayload } from '@lib/jwt/JwtManager';
 
 describe('JwtManager', () => {
-  const payload = { id: '123', role: 'user' };
-  const secret = 'test-secret';
-  const token = 'mocked.jwt.token';
-
-  let jwtLibMock: {
-    sign: jest.Mock;
-    verify: jest.Mock;
-    decode: jest.Mock;
-  };
-
   let jwtManager: JwtManager;
+  const secret = 'test-secret-key-at-least-32-chars';
 
   beforeEach(() => {
-    jwtLibMock = {
-      sign: jest.fn().mockReturnValue(token),
-      verify: jest.fn().mockReturnValue(payload),
-      decode: jest.fn().mockReturnValue(payload),
-    };
-
-    jwtManager = new JwtManager(jwtLibMock as any);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
+    jwtManager = new JwtManager();
   });
 
   describe('sign', () => {
-    it('should sign a token with given payload, secret and options', () => {
-      const options: IJwtSignOptions = { expiresIn: '1h' };
+    it('should sign a payload and return a token', () => {
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
 
-      const result = jwtManager.sign(payload, secret, options);
+      const token = jwtManager.sign(payload, secret);
 
-      expect(jwtLibMock.sign).toHaveBeenCalledWith(payload, secret, options);
-      expect(result).toBe(token);
+      expect(token).toBeDefined();
+      expect(typeof token).toBe('string');
+      expect(token.split('.')).toHaveLength(3);
     });
 
-    it('should sign a token with default options if none are provided', () => {
-      const result = jwtManager.sign(payload, secret);
+    it('should sign a payload with options', () => {
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
 
-      expect(jwtLibMock.sign).toHaveBeenCalledWith(payload, secret, undefined);
-      expect(result).toBe(token);
+      const token = jwtManager.sign(payload, secret, { expiresIn: '1h' });
+
+      expect(token).toBeDefined();
     });
   });
 
   describe('verify', () => {
-    it('should verify a token and return the decoded payload', () => {
-      const result = jwtManager.verify<typeof payload>(token, secret);
+    it('should verify a valid token and return payload', () => {
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
+      const token = jwtManager.sign(payload, secret);
 
-      expect(jwtLibMock.verify).toHaveBeenCalledWith(token, secret);
-      expect(result).toEqual(payload);
+      const decoded = jwtManager.verify(token, secret);
+
+      expect(decoded.sub).toBe('123');
+      expect(decoded.role).toBe('guest');
+    });
+
+    it('should throw error for invalid token', () => {
+      const invalidToken = 'invalid.token.here';
+
+      expect(() => jwtManager.verify(invalidToken, secret)).toThrow();
+    });
+
+    it('should throw error for wrong secret', () => {
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
+      const token = jwtManager.sign(payload, secret);
+
+      expect(() => jwtManager.verify(token, 'wrong-secret')).toThrow();
+    });
+
+    it('should throw error for expired token', () => {
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
+      const token = jwtManager.sign(payload, secret, { expiresIn: '-1s' });
+
+      expect(() => jwtManager.verify(token, secret)).toThrow();
     });
   });
 
   describe('decode', () => {
-    it('should decode a token and return the decoded value', () => {
-      const result = jwtManager.decode<typeof payload>(token);
+    it('should decode a token without verification', () => {
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
+      const token = jwtManager.sign(payload, secret);
 
-      expect(jwtLibMock.decode).toHaveBeenCalledWith(token);
-      expect(result).toEqual(payload);
+      const decoded = jwtManager.decode(token);
+
+      expect(decoded?.sub).toBe('123');
+      expect(decoded?.role).toBe('guest');
     });
 
-    it('should return null if decoding fails or returns null', () => {
-      jwtLibMock.decode.mockReturnValueOnce(null);
+    it('should return null for invalid token', () => {
+      const decoded = jwtManager.decode('not-a-valid-token');
 
-      const result = jwtManager.decode(token);
+      expect(decoded).toBeNull();
+    });
 
-      expect(result).toBeNull();
+    it('should decode token even with wrong secret used for signing', () => {
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
+      const token = jwtManager.sign(payload, 'different-secret-key-32-chars-long');
+
+      const decoded = jwtManager.decode(token);
+
+      expect(decoded?.sub).toBe('123');
     });
   });
 });

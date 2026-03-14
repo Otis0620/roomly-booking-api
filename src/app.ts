@@ -1,7 +1,6 @@
 import express, { Application } from 'express';
 import helmet from 'helmet';
 import { Container } from 'inversify';
-import passport from 'passport';
 
 import { errorHandler } from '@middleware/errorHandler';
 import { createRoutes } from '@routes/routerFactory';
@@ -19,8 +18,6 @@ export function createApp(container: Container): Application {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-
-  app.use(passport.initialize());
 
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });

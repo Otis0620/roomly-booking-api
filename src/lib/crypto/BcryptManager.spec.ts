@@ -1,56 +1,53 @@
-import { BcryptManager } from './BcryptManager';
-import { ICryptoManager } from './ICryptoManager';
-import { ICryptoProvider } from './ICryptoProvider';
+import { BcryptManager } from '@lib/crypto/BcryptManager';
 
 describe('BcryptManager', () => {
-  let bcryptManager: ICryptoManager;
-  let cryptoProviderMock: jest.Mocked<ICryptoProvider>;
+  let bcryptManager: BcryptManager;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-
-    cryptoProviderMock = {
-      hash: jest.fn(),
-      genSalt: jest.fn(),
-      compare: jest.fn(),
-    };
-
-    bcryptManager = new BcryptManager(cryptoProviderMock);
+    bcryptManager = new BcryptManager();
   });
 
   describe('hash', () => {
-    it('should call bcrypt.hash with correct arguments and return the hash', async () => {
-      cryptoProviderMock.hash.mockResolvedValueOnce('mocked-hash');
+    it('should hash a password', async () => {
+      const password = 'securepassword123';
+      const saltRounds = 10;
 
-      const result = await bcryptManager.hash('my-password', 10);
+      const hash = await bcryptManager.hash(password, saltRounds);
 
-      expect(cryptoProviderMock.hash).toHaveBeenCalledWith('my-password', 10);
-      expect(result).toBe('mocked-hash');
+      expect(hash).toBeDefined();
+      expect(hash).not.toBe(password);
+      expect(hash.startsWith('$2b$')).toBe(true);
     });
-  });
 
-  describe('genSalt', () => {
-    it('should call bcrypt.genSalt with correct rounds and return the salt', async () => {
-      cryptoProviderMock.genSalt.mockResolvedValueOnce('mocked-salt');
+    it('should generate different hashes for same password', async () => {
+      const password = 'securepassword123';
+      const saltRounds = 10;
 
-      const result = await bcryptManager.genSalt(12);
+      const hash1 = await bcryptManager.hash(password, saltRounds);
+      const hash2 = await bcryptManager.hash(password, saltRounds);
 
-      expect(cryptoProviderMock.genSalt).toHaveBeenCalledWith(12);
-      expect(result).toBe('mocked-salt');
+      expect(hash1).not.toBe(hash2);
     });
   });
 
   describe('compare', () => {
-    it('should call bcrypt.compare with correct arguments and return the comparison result', async () => {
-      cryptoProviderMock.compare.mockResolvedValueOnce(true);
+    it('should return true for matching password', async () => {
+      const password = 'securepassword123';
+      const hash = await bcryptManager.hash(password, 10);
 
-      const result = await bcryptManager.compare('mocked-data', 'mocked-encrypted-data');
+      const result = await bcryptManager.compare(password, hash);
 
-      expect(cryptoProviderMock.compare).toHaveBeenCalledWith(
-        'mocked-data',
-        'mocked-encrypted-data',
-      );
       expect(result).toBe(true);
+    });
+
+    it('should return false for non-matching password', async () => {
+      const password = 'securepassword123';
+      const wrongPassword = 'wrongpassword';
+      const hash = await bcryptManager.hash(password, 10);
+
+      const result = await bcryptManager.compare(wrongPassword, hash);
+
+      expect(result).toBe(false);
     });
   });
 });

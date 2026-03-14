@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { validateEnv } from '@config/env';
-import { configurePassport } from '@infra/auth/passport';
 import { AppDataSource } from '@infra/database/dataSource';
 import { createContainer } from '@infra/di/container';
 
@@ -17,7 +16,6 @@ async function main(): Promise<void> {
 
   const container = createContainer();
 
-  configurePassport(container);
   const app = createApp(container);
 
   const server = app.listen(env.PORT, () => {

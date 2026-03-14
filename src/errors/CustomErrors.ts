@@ -1,115 +1,107 @@
 /**
- * Base error class that extends the native `Error` object.
- *
- * Provides additional properties like HTTP status codes and optional error details.
+ * Base error class for application errors.
  */
 export class BaseError extends Error {
-  /**
-   * HTTP status code associated with the error.
-   */
   public status: number;
 
   /**
-   * Optional additional details or metadata about the error.
+   * @param message - Error message
+   * @param status - HTTP status code
    */
-  public details?: any;
-
-  /**
-   * Creates a new `BaseError` instance.
-   *
-   * @param {string} message - Error message.
-   * @param {number} status - HTTP status code.
-   * @param {any} [details] - Optional additional error details.
-   */
-  constructor(message: string, status: number, details?: any) {
+  constructor(message: string, status: number) {
     super(message);
+
     this.status = status;
-    this.details = details;
 
     Object.setPrototypeOf(this, BaseError.prototype);
   }
 }
 
 /**
- * Represents an HTTP 400 Bad Request error.
+ * HTTP 400 Bad Request error.
  */
-export class BadRequestError extends BaseError {
+export class BadRequestError<T = unknown> extends BaseError {
+  public details?: T;
+
   /**
-   * @param {string} [message='Bad Request'] - Optional custom error message.
-   * @param {any} [details] - Optional additional error details.
+   * @param message - Error message
+   * @param details - Optional validation or error details
    */
-  constructor(message = 'Bad Request', details?: any) {
-    super(message, 400, details);
+  constructor(message = 'Bad Request', details?: T) {
+    super(message, 400);
+
+    this.details = details;
+
     Object.setPrototypeOf(this, BadRequestError.prototype);
   }
 }
 
 /**
- * Represents an HTTP 401 Unauthorized error.
+ * HTTP 401 Unauthorized error.
  */
 export class UnauthorizedError extends BaseError {
   /**
-   * @param {string} [message='Unauthorized'] - Optional custom error message.
-   * @param {any} [details] - Optional additional error details.
+   * @param message - Error message
    */
-  constructor(message = 'Unauthorized', details?: any) {
-    super(message, 401, details);
+  constructor(message = 'Unauthorized') {
+    super(message, 401);
+
     Object.setPrototypeOf(this, UnauthorizedError.prototype);
   }
 }
 
 /**
- * Represents an HTTP 403 Forbidden error.
+ * HTTP 403 Forbidden error.
  */
 export class ForbiddenError extends BaseError {
   /**
-   * @param {string} [message='Forbidden'] - Optional custom error message.
-   * @param {any} [details] - Optional additional error details.
+   * @param message - Error message
    */
-  constructor(message = 'Forbidden', details?: any) {
-    super(message, 403, details);
+  constructor(message = 'Forbidden') {
+    super(message, 403);
+
     Object.setPrototypeOf(this, ForbiddenError.prototype);
   }
 }
 
 /**
- * Represents an HTTP 404 Not Found error.
+ * HTTP 404 Not Found error.
  */
 export class NotFoundError extends BaseError {
   /**
-   * @param {string} [message='Not Found'] - Optional custom error message.
-   * @param {any} [details] - Optional additional error details.
+   * @param message - Error message
    */
-  constructor(message = 'Not Found', details?: any) {
-    super(message, 404, details);
+  constructor(message = 'Not Found') {
+    super(message, 404);
+
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }
 }
 
 /**
- * Represents an HTTP 409 Conflict error.
+ * HTTP 409 Conflict error.
  */
 export class ConflictError extends BaseError {
   /**
-   * @param {string} [message='Conflict'] - Optional custom error message.
-   * @param {any} [details] - Optional additional error details.
+   * @param message - Error message
    */
-  constructor(message = 'Conflict', details?: any) {
-    super(message, 409, details);
+  constructor(message = 'Conflict') {
+    super(message, 409);
+
     Object.setPrototypeOf(this, ConflictError.prototype);
   }
 }
 
 /**
- * Represents an HTTP 500 Internal Server Error.
+ * HTTP 500 Internal Server Error.
  */
 export class InternalServerError extends BaseError {
   /**
-   * @param {string} [message='Internal Server Error'] - Optional custom error message.
-   * @param {any} [details] - Optional additional error details.
+   * @param message - Error message
    */
-  constructor(message = 'Internal Server Error', details?: any) {
-    super(message, 500, details);
+  constructor(message = 'Internal Server Error') {
+    super(message, 500);
+
     Object.setPrototypeOf(this, InternalServerError.prototype);
   }
 }

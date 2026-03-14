@@ -1,44 +1,103 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { BaseError, HttpError } from '@errors';
-
-import { errorHandler } from './errorHandler';
+import { BaseError, BadRequestError, UnauthorizedError, NotFoundError } from '@errors/CustomErrors';
+import { errorHandler } from '@middleware/errorHandler';
 
 describe('errorHandler', () => {
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
-  let nextFunction: NextFunction;
+  let req: Partial<Request>;
+  let res: Partial<Response>;
+  let next: NextFunction;
 
   beforeEach(() => {
-    mockRequest = {};
-    mockResponse = {
+    req = {};
+    res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    nextFunction = jest.fn();
+    next = jest.fn();
   });
 
-  it('should handle errors with custom status code and message when instance of BaseError', () => {
-    const mockError: HttpError = new BaseError('Not Found', 404) as HttpError;
+  it('should handle BadRequestError with details', () => {
+    const details = [{ field: 'email', message: 'Invalid format' }];
+    const error = new BadRequestError('Validation failed', details);
 
-    errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);
+    errorHandler(error, req as Request, res as Response, next);
 
-    expect(mockResponse.status).toHaveBeenCalledWith(404);
-    expect(mockResponse.json).toHaveBeenCalledWith({
-      error: 'Not Found',
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Validation failed',
+      code: 400,
+      details: details,
+    });
+  });
+
+  it('should handle BadRequestError without details', () => {
+    const error = new BadRequestError('Invalid input');
+
+    errorHandler(error, req as Request, res as Response, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Invalid input',
+      code: 400,
+    });
+  });
+
+  it('should handle BaseError', () => {
+    const error = new BaseError('Something went wrong', 418);
+
+    errorHandler(error, req as Request, res as Response, next);
+
+    expect(res.status).toHaveBeenCalledWith(418);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Something went wrong',
+      code: 418,
+    });
+  });
+
+  it('should handle UnauthorizedError', () => {
+    const error = new UnauthorizedError('Invalid token');
+
+    errorHandler(error, req as Request, res as Response, next);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Invalid token',
+      code: 401,
+    });
+  });
+
+  it('should handle NotFoundError', () => {
+    const error = new NotFoundError('User not found');
+
+    errorHandler(error, req as Request, res as Response, next);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'User not found',
       code: 404,
     });
   });
 
-  it('should handle errors with default 500 status code when not an instance of BaseError', () => {
-    const mockError: HttpError = new Error('Something went wrong') as HttpError;
+  it('should return 500 for generic Error', () => {
+    const error = new Error('Unexpected error');
 
-    errorHandler(mockError, mockRequest as Request, mockResponse as Response, nextFunction);
+    errorHandler(error, req as Request, res as Response, next);
 
-    expect(mockResponse.status).toHaveBeenCalledWith(500);
-    expect(mockResponse.json).toHaveBeenCalledWith({
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
       error: 'Internal Server Error',
       code: 500,
     });
+  });
+
+  it('should not leak error details for unknown errors', () => {
+    const error = new Error('Database connection failed');
+
+    errorHandler(error, req as Request, res as Response, next);
+
+    expect(res.json).not.toHaveBeenCalledWith(
+      expect.objectContaining({ error: 'Database connection failed' }),
+    );
   });
 });

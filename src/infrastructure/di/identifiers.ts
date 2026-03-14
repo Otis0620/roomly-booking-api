@@ -6,16 +6,8 @@
  */
 export const IDENTIFIERS = {
   DataSource: Symbol.for('DataSource'),
-
-  UserRepository: Symbol.for('UserRepository'),
-  HotelRepository: Symbol.for('HotelRepository'),
-
-  AuthService: Symbol.for('AuthService'),
-  HotelService: Symbol.for('HotelService'),
-
   CryptoManager: Symbol.for('CryptoManager'),
   JwtManager: Symbol.for('JwtManager'),
-
+  UserRepository: Symbol.for('UserRepository'),
   AuthController: Symbol.for('AuthController'),
-  HotelController: Symbol.for('HotelController'),
 } as const;

@@ -1,98 +1,78 @@
-import 'reflect-metadata';
-import { Container } from 'inversify';
-import { Repository, DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
-import { User } from '@entities';
-import { IUserRepository, UserRepository } from '@repositories';
-
-import { DEPENDENCY_IDENTIFIERS } from '@infra/di';
-import { UserRole } from '@lib/types';
+import { User } from '@entities/User';
+import { UserRole } from '@lib/types/userTypes';
+import { UserRepository } from '@repositories/UserRepository';
 
 describe('UserRepository', () => {
-  let userRepository: IUserRepository;
-  let repositoryMock: jest.Mocked<Repository<User>>;
-  let dataSourceMock: jest.Mocked<DataSource>;
-  let container: Container;
+  let userRepository: UserRepository;
+  let mockRepository: jest.Mocked<Repository<User>>;
+  let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(() => {
-    container = new Container();
-
-    repositoryMock = {
+    mockRepository = {
       findOneBy: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
     } as unknown as jest.Mocked<Repository<User>>;
 
-    dataSourceMock = {
-      getRepository: jest.fn().mockReturnValue(repositoryMock),
+    mockDataSource = {
+      getRepository: jest.fn().mockReturnValue(mockRepository),
     } as unknown as jest.Mocked<DataSource>;
 
-    container.bind<DataSource>(DEPENDENCY_IDENTIFIERS.DataSource).toConstantValue(dataSourceMock);
-    container.bind<IUserRepository>(DEPENDENCY_IDENTIFIERS.IUserRepository).to(UserRepository);
-
-    userRepository = container.get<IUserRepository>(DEPENDENCY_IDENTIFIERS.IUserRepository);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
+    userRepository = new UserRepository(mockDataSource);
   });
 
   describe('findByEmail', () => {
-    it('should find a user by email', async () => {
-      const mockUser: User = {
+    it('should return user when found', async () => {
+      const user: User = {
         id: '123',
         email: 'test@example.com',
-        password_hash: 'hashed_password',
+        passwordHash: 'hashedpassword',
         role: UserRole.GUEST,
-        created_at: new Date(),
+        createdAt: new Date(),
       };
 
-      repositoryMock.findOneBy.mockResolvedValue(mockUser);
+      mockRepository.findOneBy.mockResolvedValue(user);
 
-      const result = await userRepository.findByEmail(mockUser.email);
+      const result = await userRepository.findByEmail('test@example.com');
 
-      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ email: mockUser.email });
-      expect(result).toEqual(mockUser);
+      expect(mockRepository.findOneBy).toHaveBeenCalledWith({ email: 'test@example.com' });
+      expect(result).toEqual(user);
     });
 
-    it('should return null if no user is found', async () => {
-      const userEmail = 'notfound@example.com';
+    it('should return null when user not found', async () => {
+      mockRepository.findOneBy.mockResolvedValue(null);
 
-      repositoryMock.findOneBy.mockResolvedValue(null);
+      const result = await userRepository.findByEmail('nonexistent@example.com');
 
-      const result = await userRepository.findByEmail(userEmail);
-
-      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ email: userEmail });
       expect(result).toBeNull();
     });
   });
 
   describe('findById', () => {
-    it('should find a user by id', async () => {
-      const mockUser: User = {
+    it('should return user when found', async () => {
+      const user: User = {
         id: '123',
         email: 'test@example.com',
-        password_hash: 'hashed_password',
+        passwordHash: 'hashedpassword',
         role: UserRole.GUEST,
-        created_at: new Date(),
+        createdAt: new Date(),
       };
 
-      repositoryMock.findOneBy.mockResolvedValue(mockUser);
+      mockRepository.findOneBy.mockResolvedValue(user);
 
-      const result = await userRepository.findById(mockUser.id);
+      const result = await userRepository.findById('123');
 
-      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ id: mockUser.id });
-      expect(result).toEqual(mockUser);
+      expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: '123' });
+      expect(result).toEqual(user);
     });
 
-    it('should return null if no user is found', async () => {
-      const userId = '12345';
+    it('should return null when user not found', async () => {
+      mockRepository.findOneBy.mockResolvedValue(null);
 
-      repositoryMock.findOneBy.mockResolvedValue(null);
+      const result = await userRepository.findById('nonexistent-id');
 
-      const result = await userRepository.findById(userId);
-
-      expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ id: userId });
       expect(result).toBeNull();
     });
   });
@@ -101,26 +81,25 @@ describe('UserRepository', () => {
     it('should create and save a new user', async () => {
       const userData: Partial<User> = {
         email: 'new@example.com',
-        password_hash: 'secure_hash',
+        passwordHash: 'hashedpassword',
         role: UserRole.GUEST,
       };
-
-      const savedUser: User = {
-        id: '123',
-        email: userData.email!,
-        password_hash: userData.password_hash!,
-        role: userData.role!,
-        created_at: new Date(),
+      const createdUser: User = {
+        id: '456',
+        email: 'new@example.com',
+        passwordHash: 'hashedpassword',
+        role: UserRole.GUEST,
+        createdAt: new Date(),
       };
 
-      repositoryMock.create.mockReturnValue(savedUser);
-      repositoryMock.save.mockResolvedValue(savedUser);
+      mockRepository.create.mockReturnValue(createdUser);
+      mockRepository.save.mockResolvedValue(createdUser);
 
       const result = await userRepository.create(userData);
 
-      expect(repositoryMock.create).toHaveBeenCalledWith(userData);
-      expect(repositoryMock.save).toHaveBeenCalledWith(savedUser);
-      expect(result).toEqual(savedUser);
+      expect(mockRepository.create).toHaveBeenCalledWith(userData);
+      expect(mockRepository.save).toHaveBeenCalledWith(createdUser);
+      expect(result).toEqual(createdUser);
     });
   });
 });
