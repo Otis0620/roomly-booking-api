@@ -29,8 +29,8 @@ export class AuthController {
    */
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const dto: RegisterRequestDTO = req.body;
-      const result = await this.authService.register(dto);
+      const registerDto: RegisterRequestDTO = req.body;
+      const result = await this.authService.register(registerDto);
 
       res.status(201).json(result);
     } catch (error) {
@@ -47,10 +47,10 @@ export class AuthController {
    */
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const dto: LoginRequestDTO = req.body;
-      const result = await this.authService.login(dto);
+      // const dto: LoginRequestDTO = req.body;
+      // const result = await this.authService.login(dto);
 
-      res.json(result);
+      res.json({});
     } catch (error) {
       next(error);
     }
