@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import { User } from '@entities/User';
-import { AppDataSource } from '@infra/database/dataSource';
+import { getDataSource } from '@infra/database/dataSource';
 import { UserRole } from '@lib/types/userTypes';
 
 const DEFAULT_PASSWORD = 'password123';
@@ -14,7 +14,9 @@ const SALT_ROUNDS = 10;
  * @returns The created User entity
  */
 export const seedUser = async (overrides: Partial<User> = {}): Promise<User> => {
-  const repository = AppDataSource.getRepository(User);
+  const dataSource = getDataSource();
+
+  const repository = dataSource.getRepository(User);
   const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, SALT_ROUNDS);
 
   const user = repository.create({

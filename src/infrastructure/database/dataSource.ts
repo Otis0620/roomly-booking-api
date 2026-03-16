@@ -1,23 +1,33 @@
 import 'reflect-metadata';
-import '@config/env';
 import { DataSource } from 'typeorm';
 
+import { getEnv } from '@config/env';
+
+let dataSource: DataSource | null = null;
+
 /**
- * TypeORM data source configuration.
+ * Returns the TypeORM data source, creating it on first call.
  *
- * Note: Environment variables are read at module load time.
- * For validated access, use getEnv() from @config/env after validateEnv().
+ * Must be called after validateEnv() has run.
  */
-export const AppDataSource = new DataSource({
-  type: 'mysql',
-  host: process.env.TYPEORM_HOST || process.env.DB_HOST,
-  port: parseInt(process.env.TYPEORM_PORT || process.env.DB_PORT || '3306', 10),
-  username: process.env.TYPEORM_USERNAME || process.env.DB_USERNAME,
-  password: process.env.TYPEORM_PASSWORD || process.env.DB_PASSWORD,
-  database: process.env.TYPEORM_DATABASE || process.env.DB_NAME,
-  synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
-  logging: process.env.TYPEORM_LOGGING === 'true',
-  entities: ['src/entities/**/*.ts'],
-  migrations: ['src/migrations/**/*.ts'],
-  subscribers: [],
-});
+export function getDataSource(): DataSource {
+  if (!dataSource) {
+    const env = getEnv();
+
+    dataSource = new DataSource({
+      type: 'mysql',
+      host: env.TYPEORM_HOST,
+      port: env.TYPEORM_PORT,
+      username: env.TYPEORM_USERNAME,
+      password: env.TYPEORM_PASSWORD,
+      database: env.TYPEORM_DATABASE,
+      synchronize: env.TYPEORM_SYNCHRONIZE,
+      logging: env.TYPEORM_LOGGING,
+      entities: ['src/entities/**/*.ts'],
+      migrations: ['src/migrations/**/*.ts'],
+      subscribers: [],
+    });
+  }
+
+  return dataSource;
+}

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { DataSource, QueryRunner, EntityMetadata } from 'typeorm';
 
-import { AppDataSource } from '@infra/database/dataSource';
+import { getDataSource } from '@infra/database/dataSource';
 
 /**
  * Executes a database operation with foreign key checks temporarily disabled.
@@ -78,12 +78,14 @@ async function truncateAllEntitiesMySQL(
  * @throws {Error} If the database fails to initialize.
  */
 export const setupTestDatabase = async (): Promise<DataSource> => {
+  const dataSource = getDataSource();
+
   try {
-    if (AppDataSource.isInitialized) {
-      await AppDataSource.destroy();
+    if (dataSource.isInitialized) {
+      await dataSource.destroy();
     }
 
-    return await AppDataSource.initialize();
+    return await dataSource.initialize();
   } catch (error) {
     console.error('Error initializing test database:', error);
     throw error;
@@ -96,8 +98,10 @@ export const setupTestDatabase = async (): Promise<DataSource> => {
  * @returns {Promise<void>}
  */
 export const closeTestDatabase = async (): Promise<void> => {
-  if (AppDataSource.isInitialized) {
-    await AppDataSource.destroy();
+  const dataSource = getDataSource();
+
+  if (dataSource.isInitialized) {
+    await dataSource.destroy();
   }
 };
 
@@ -110,11 +114,13 @@ export const closeTestDatabase = async (): Promise<void> => {
  * @returns {Promise<void>}
  */
 export const clearTestDatabase = async (): Promise<void> => {
-  if (!AppDataSource.isInitialized) {
-    await AppDataSource.initialize();
+  const dataSource = getDataSource();
+
+  if (!dataSource.isInitialized) {
+    await dataSource.initialize();
   }
 
-  await withForeignKeyChecksDisabled(AppDataSource, (queryRunner) =>
-    truncateAllEntitiesMySQL(queryRunner, AppDataSource.entityMetadatas),
+  await withForeignKeyChecksDisabled(dataSource, (queryRunner) =>
+    truncateAllEntitiesMySQL(queryRunner, dataSource.entityMetadatas),
   );
 };

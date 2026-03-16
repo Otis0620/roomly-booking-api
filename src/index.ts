@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { validateEnv } from '@config/env';
-import { AppDataSource } from '@infra/database/dataSource';
+import { getDataSource } from '@infra/database/dataSource';
 import { createContainer } from '@infra/di/container';
 
 import { createApp } from './app';
@@ -11,7 +11,9 @@ import { createApp } from './app';
 async function main(): Promise<void> {
   const env = validateEnv();
 
-  await AppDataSource.initialize();
+  const dataSource = getDataSource();
+
+  await dataSource.initialize();
   console.log('✓ Database connected');
 
   const container = createContainer();
@@ -29,7 +31,7 @@ async function main(): Promise<void> {
     server.close(async () => {
       console.log('✓ HTTP server closed');
 
-      await AppDataSource.destroy();
+      await dataSource.destroy();
       console.log('✓ Database connection closed');
 
       process.exit(0);
