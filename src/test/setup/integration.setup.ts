@@ -9,5 +9,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await clearTestDatabase();
   await closeTestDatabase();
 });
