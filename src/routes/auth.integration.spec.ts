@@ -70,4 +70,53 @@ describe('auth', () => {
       expect(response.status).toBe(400);
     });
   });
+
+  describe('POST /api/v1/auth/login', () => {
+    it('should return 200 with a token on valid credentials', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ email: 'existing@example.com', password: 'password123' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.token).toBeDefined();
+    });
+
+    it('should return 401 when email does not exist', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ email: 'nonexistent@example.com', password: 'password123' });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should return 401 when password is incorrect', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ email: 'existing@example.com', password: 'wrongpassword' });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should return 400 when body is empty', async () => {
+      const response = await request(app).post('/api/v1/auth/login').send({});
+
+      expect(response.status).toBe(400);
+    });
+
+    it('should return 400 when email is invalid', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ email: 'notanemail', password: 'password123' });
+
+      expect(response.status).toBe(400);
+    });
+
+    it('should return 400 when password is missing', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ email: 'existing@example.com' });
+
+      expect(response.status).toBe(400);
+    });
+  });
 });
