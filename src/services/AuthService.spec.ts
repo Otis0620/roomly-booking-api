@@ -1,6 +1,8 @@
+import { LoginRequestDTO } from '@dtos/auth/LoginRequestDTO';
 import { RegisterRequestDTO } from '@dtos/auth/RegisterRequestDTO';
-import { BadRequestError } from '@errors/CustomErrors';
+import { BadRequestError, UnauthorizedError } from '@errors/CustomErrors';
 import { BcryptManager } from '@lib/crypto/BcryptManager';
+import { JwtManager } from '@lib/jwt/JwtManager';
 import { UserRole } from '@lib/types/userTypes';
 import { IUserRepository } from '@repositories/UserRepository';
 
@@ -10,6 +12,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let mockUserRepository: Partial<IUserRepository>;
   let mockBcryptManager: Partial<BcryptManager>;
+  let mockJwtManager: Partial<JwtManager>;
 
   beforeEach(() => {
     mockUserRepository = {
@@ -19,11 +22,17 @@ describe('AuthService', () => {
 
     mockBcryptManager = {
       hash: jest.fn(),
+      compare: jest.fn(),
+    };
+
+    mockJwtManager = {
+      sign: jest.fn(),
     };
 
     authService = new AuthService(
       mockUserRepository as Partial<IUserRepository> as IUserRepository,
       mockBcryptManager as Partial<BcryptManager> as BcryptManager,
+      mockJwtManager as Partial<JwtManager> as JwtManager,
     );
   });
 
@@ -85,7 +94,7 @@ describe('AuthService', () => {
 
       await authService.register(registerDto);
 
-      expect(mockBcryptManager.hash).toHaveBeenCalledWith('password123', 10);
+      expect(mockBcryptManager.hash).toHaveBeenCalledWith('password123');
       expect(mockUserRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({ passwordHash: 'hashed_password' }),
       );
@@ -118,6 +127,89 @@ describe('AuthService', () => {
         role: createdUser.role,
         createdAt: createdUser.createdAt.toISOString(),
       });
+    });
+  });
+
+  describe('login', () => {
+    it('should throw UnauthorizedError if user is not found', async () => {
+      const loginDto: LoginRequestDTO = {
+        email: 'user@example.com',
+        password: 'password123',
+      };
+
+      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(null);
+
+      await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
+    });
+
+    it('should throw UnauthorizedError if password is invalid', async () => {
+      const loginDto: LoginRequestDTO = {
+        email: 'user@example.com',
+        password: 'password123',
+      };
+
+      const storedUser = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+      };
+
+      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(storedUser);
+      (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(false);
+
+      await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
+    });
+
+    it('should compare the password against the stored hash', async () => {
+      const loginDto: LoginRequestDTO = {
+        email: 'user@example.com',
+        password: 'password123',
+      };
+
+      const storedUser = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+      };
+
+      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(storedUser);
+      (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(true);
+      (mockJwtManager.sign as jest.Mock).mockReturnValueOnce('jwt-token');
+
+      await authService.login(loginDto);
+
+      expect(mockBcryptManager.compare).toHaveBeenCalledWith('password123', 'hashed_password');
+    });
+
+    it('should return a token on successful login', async () => {
+      const loginDto: LoginRequestDTO = {
+        email: 'user@example.com',
+        password: 'password123',
+      };
+
+      const storedUser = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+      };
+
+      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(storedUser);
+      (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(true);
+      (mockJwtManager.sign as jest.Mock).mockReturnValueOnce('jwt-token');
+
+      const result = await authService.login(loginDto);
+
+      expect(mockJwtManager.sign).toHaveBeenCalledWith({
+        sub: 'user-id-1',
+        role: UserRole.GUEST,
+      });
+      expect(result).toEqual({ token: 'jwt-token' });
     });
   });
 });
