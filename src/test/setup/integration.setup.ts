@@ -1,14 +1,8 @@
-import 'reflect-metadata';
-import { seedUser } from '../seeds/userSeeds';
-import { setupTestDatabase, clearTestDatabase, closeTestDatabase } from '../utils/setupDatabase';
+import { validateEnv } from '../../config/env';
 
-beforeAll(async () => {
-  await setupTestDatabase();
-  await clearTestDatabase();
-  await seedUser();
-});
-
-afterAll(async () => {
-  await clearTestDatabase();
-  await closeTestDatabase();
-});
+/**
+ * Global setup for integration tests.
+ *
+ * Validates environment variables before any test suites run.
+ */
+validateEnv();

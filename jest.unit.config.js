@@ -4,7 +4,7 @@ module.exports = {
   ...base,
   testRegex: '^(?!.*\\.integration\\.spec\\.ts$).*\\.spec\\.ts$',
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  setupFilesAfterEnv: ['./src/test/setup/unit.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test/setup/unit.setup.ts'],
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: [
