@@ -2,17 +2,21 @@ import { JwtManager, JwtPayload } from '@lib/jwt/JwtManager';
 
 describe('JwtManager', () => {
   let jwtManager: JwtManager;
-  const secret = 'test-secret-key-at-least-32-chars';
+  let secret: string;
+  let expiresIn: string;
 
   beforeEach(() => {
-    jwtManager = new JwtManager();
+    secret = 'test-secret-key-at-least-32-chars';
+    expiresIn = '1h';
+
+    jwtManager = new JwtManager(secret, expiresIn);
   });
 
   describe('sign', () => {
     it('should sign a payload and return a token', () => {
       const payload: JwtPayload = { sub: '123', role: 'guest' };
 
-      const token = jwtManager.sign(payload, secret);
+      const token = jwtManager.sign(payload);
 
       expect(token).toBeDefined();
       expect(typeof token).toBe('string');
@@ -22,7 +26,7 @@ describe('JwtManager', () => {
     it('should sign a payload with options', () => {
       const payload: JwtPayload = { sub: '123', role: 'guest' };
 
-      const token = jwtManager.sign(payload, secret, { expiresIn: '1h' });
+      const token = jwtManager.sign(payload);
 
       expect(token).toBeDefined();
     });
@@ -31,9 +35,9 @@ describe('JwtManager', () => {
   describe('verify', () => {
     it('should verify a valid token and return payload', () => {
       const payload: JwtPayload = { sub: '123', role: 'guest' };
-      const token = jwtManager.sign(payload, secret);
+      const token = jwtManager.sign(payload);
 
-      const decoded = jwtManager.verify(token, secret);
+      const decoded = jwtManager.verify(token);
 
       expect(decoded.sub).toBe('123');
       expect(decoded.role).toBe('guest');
@@ -42,28 +46,25 @@ describe('JwtManager', () => {
     it('should throw error for invalid token', () => {
       const invalidToken = 'invalid.token.here';
 
-      expect(() => jwtManager.verify(invalidToken, secret)).toThrow();
-    });
-
-    it('should throw error for wrong secret', () => {
-      const payload: JwtPayload = { sub: '123', role: 'guest' };
-      const token = jwtManager.sign(payload, secret);
-
-      expect(() => jwtManager.verify(token, 'wrong-secret')).toThrow();
+      expect(() => jwtManager.verify(invalidToken)).toThrow();
     });
 
     it('should throw error for expired token', () => {
-      const payload: JwtPayload = { sub: '123', role: 'guest' };
-      const token = jwtManager.sign(payload, secret, { expiresIn: '-1s' });
+      const expiresIn = '-1s';
 
-      expect(() => jwtManager.verify(token, secret)).toThrow();
+      const jwtManager = new JwtManager(secret, expiresIn);
+
+      const payload: JwtPayload = { sub: '123', role: 'guest' };
+      const token = jwtManager.sign(payload);
+
+      expect(() => jwtManager.verify(token)).toThrow();
     });
   });
 
   describe('decode', () => {
     it('should decode a token without verification', () => {
       const payload: JwtPayload = { sub: '123', role: 'guest' };
-      const token = jwtManager.sign(payload, secret);
+      const token = jwtManager.sign(payload);
 
       const decoded = jwtManager.decode(token);
 
@@ -79,7 +80,7 @@ describe('JwtManager', () => {
 
     it('should decode token even with wrong secret used for signing', () => {
       const payload: JwtPayload = { sub: '123', role: 'guest' };
-      const token = jwtManager.sign(payload, 'different-secret-key-32-chars-long');
+      const token = jwtManager.sign(payload);
 
       const decoded = jwtManager.decode(token);
 
