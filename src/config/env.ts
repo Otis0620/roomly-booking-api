@@ -30,6 +30,7 @@ export interface EnvConfig {
   PORT: number;
   JWT_SECRET: string;
   JWT_EXPIRES_IN: string;
+  BCRYPT_SALT_ROUNDS: number;
   TYPEORM_HOST: string;
   TYPEORM_PORT: number;
   TYPEORM_USERNAME: string;
@@ -77,6 +78,12 @@ export function validateEnv(): EnvConfig {
     errors.push('JWT_EXPIRES_IN is required');
   }
 
+  const BCRYPT_SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS!, 10);
+
+  if (isNaN(BCRYPT_SALT_ROUNDS) || BCRYPT_SALT_ROUNDS < 4 || BCRYPT_SALT_ROUNDS > 20) {
+    errors.push('BCRYPT_SALT_ROUNDS must be a number between 4 and 20');
+  }
+
   const TYPEORM_HOST = process.env.TYPEORM_HOST;
 
   if (!TYPEORM_HOST) {
@@ -119,6 +126,7 @@ export function validateEnv(): EnvConfig {
     PORT,
     JWT_SECRET: JWT_SECRET!,
     JWT_EXPIRES_IN: JWT_EXPIRES_IN!,
+    BCRYPT_SALT_ROUNDS: BCRYPT_SALT_ROUNDS!,
     TYPEORM_HOST: TYPEORM_HOST!,
     TYPEORM_PORT,
     TYPEORM_USERNAME: TYPEORM_USERNAME!,

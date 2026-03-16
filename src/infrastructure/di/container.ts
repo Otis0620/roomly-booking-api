@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 import { DataSource } from 'typeorm';
 
+import { getEnv } from '@config/env';
 import { AuthController } from '@controllers/AuthController';
 import { AppDataSource } from '@infra/database/dataSource';
 import { IDENTIFIERS } from '@infra/di/identifiers';
@@ -32,6 +33,8 @@ export interface ContainerOptions {
  * const container = createContainer({ dataSource: mockDataSource });
  */
 export function createContainer(options: ContainerOptions = {}): Container {
+  const env = getEnv();
+
   const container = new Container({ defaultScope: 'Transient' });
 
   const dataSource = options.dataSource ?? AppDataSource;
@@ -45,6 +48,9 @@ export function createContainer(options: ContainerOptions = {}): Container {
 
   container.bind<AuthController>(IDENTIFIERS.AuthController).to(AuthController);
   container.bind<AuthService>(IDENTIFIERS.AuthService).to(AuthService);
+  container.bind<string>(IDENTIFIERS.JwtSecret).toConstantValue(env.JWT_SECRET);
+  container.bind<string>(IDENTIFIERS.JwtExpiresIn).toConstantValue(env.JWT_EXPIRES_IN);
+  container.bind<number>(IDENTIFIERS.BcryptSaltRounds).toConstantValue(env.BCRYPT_SALT_ROUNDS);
 
   return container;
 }

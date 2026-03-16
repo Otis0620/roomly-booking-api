@@ -11,4 +11,7 @@ export const IDENTIFIERS = {
   UserRepository: Symbol.for('UserRepository'),
   AuthController: Symbol.for('AuthController'),
   AuthService: Symbol.for('AuthService'),
+  JwtSecret: Symbol.for('JwtSecret'),
+  JwtExpiresIn: Symbol.for('JwtExpiresIn'),
+  BcryptSaltRounds: Symbol.for('BcryptSaltRounds'),
 } as const;

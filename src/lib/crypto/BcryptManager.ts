@@ -1,5 +1,7 @@
 import * as bcrypt from 'bcrypt';
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+
+import { IDENTIFIERS } from '@infra/di/identifiers';
 
 /**
  * Password hashing utility using bcrypt.
@@ -7,14 +9,22 @@ import { injectable } from 'inversify';
 @injectable()
 export class BcryptManager {
   /**
+   * Creates a new BcryptManager instance.
+   *
+   * @param saltRounds - Cost factor for bcrypt hashing. Determines the number
+   *   of iterations as 2^saltRounds (e.g. 10 = 1,024 iterations). Higher
+   *   values are more secure but slower to compute.
+   */
+  constructor(@inject(IDENTIFIERS.BcryptSaltRounds) private saltRounds: number) {}
+
+  /**
    * Hashes a plain text password.
    *
    * @param data - Plain text password to hash
-   * @param saltRounds - Number of salt rounds
    * @returns Bcrypt hash of the password
    */
-  async hash(data: string, saltRounds: number): Promise<string> {
-    return bcrypt.hash(data, saltRounds);
+  async hash(data: string): Promise<string> {
+    return bcrypt.hash(data, this.saltRounds);
   }
 
   /**

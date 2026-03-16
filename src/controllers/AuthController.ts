@@ -47,10 +47,10 @@ export class AuthController {
    */
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      // const dto: LoginRequestDTO = req.body;
-      // const result = await this.authService.login(dto);
+      const loginDto: LoginRequestDTO = req.body;
+      const result = await this.authService.login(loginDto);
 
-      res.json({});
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }

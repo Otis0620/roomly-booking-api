@@ -1,5 +1,7 @@
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
 import * as jwt from 'jsonwebtoken';
+
+import { IDENTIFIERS } from '@infra/di/identifiers';
 
 /**
  * JWT token payload structure.
@@ -16,26 +18,36 @@ export interface JwtPayload {
 @injectable()
 export class JwtManager {
   /**
+   * Creates a new JwtManager instance.
+   *
+   * @param jwtSecret - Secret key for signing and verifying tokens
+   * @param jwtExpiresIn - Token expiration duration (e.g. '1h', '7d')
+   */
+  constructor(
+    @inject(IDENTIFIERS.JwtSecret) private jwtSecret: string,
+    @inject(IDENTIFIERS.JwtExpiresIn) private jwtExpiresIn: string,
+  ) {}
+
+  /**
    * Signs a payload into a JWT token.
    *
    * @param payload - Data to encode in the token
-   * @param secret - Secret key for signing
-   * @param options - Signing options
    * @returns Signed JWT token string
    */
-  sign(payload: JwtPayload, secret: string, options?: jwt.SignOptions): string {
-    return jwt.sign(payload, secret, options);
+  sign(payload: JwtPayload): string {
+    return jwt.sign(payload, this.jwtSecret, {
+      expiresIn: this.jwtExpiresIn,
+    } as jwt.SignOptions);
   }
 
   /**
    * Verifies a JWT token and returns the payload.
    *
    * @param token - JWT token to verify
-   * @param secret - Secret key used for signing
    * @returns Decoded payload
    */
-  verify<T = JwtPayload>(token: string, secret: string): T {
-    return jwt.verify(token, secret) as T;
+  verify<T = JwtPayload>(token: string): T {
+    return jwt.verify(token, this.jwtSecret) as T;
   }
 
   /**
