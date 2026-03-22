@@ -3,7 +3,8 @@ import { injectable, inject } from 'inversify';
 import { LoginRequestDTO } from '@dtos/auth/LoginRequestDTO';
 import { LoginResponseDTO } from '@dtos/auth/LoginResponseDTO';
 import { RegisterRequestDTO } from '@dtos/auth/RegisterRequestDTO';
-import { RegisterResponseDTO, toRegisterResponseDTO } from '@dtos/auth/RegisterResponseDTO';
+import { RegisterResponseDTO } from '@dtos/auth/RegisterResponseDTO';
+import { User } from '@entities/User';
 import { BadRequestError, UnauthorizedError } from '@errors/CustomErrors';
 import { IDENTIFIERS } from '@infra/di/identifiers';
 import { BcryptManager } from '@lib/crypto/BcryptManager';
@@ -52,7 +53,7 @@ export class AuthService {
       role,
     });
 
-    return toRegisterResponseDTO(user);
+    return this.toRegisterResponseDTO(user);
   }
 
   /**
@@ -82,5 +83,20 @@ export class AuthService {
     const token = this.jwtManager.sign({ sub: user.id, role: user.role });
 
     return { token };
+  }
+
+  /**
+   * Converts a User entity to a registration response DTO.
+   *
+   * @param user - User entity from database
+   * @returns Registration response data
+   */
+  toRegisterResponseDTO(user: User): RegisterResponseDTO {
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt.toISOString(),
+    };
   }
 }

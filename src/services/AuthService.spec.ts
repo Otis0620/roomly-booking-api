@@ -258,4 +258,45 @@ describe('AuthService', () => {
       expect(result).toEqual({ token: 'jwt-token' });
     });
   });
+
+  describe('toRegisterResponseDTO', () => {
+    it('should map a User entity to a RegisterResponseDTO', () => {
+      const createdAt = new Date('2026-01-01T00:00:00.000Z');
+
+      const user: User = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        suspended: false,
+        passwordHash: 'hashed_password',
+        createdAt,
+        updatedAt: new Date(),
+      };
+
+      const result = authService.toRegisterResponseDTO(user);
+
+      expect(result).toEqual({
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        createdAt: '2026-01-01T00:00:00.000Z',
+      });
+    });
+
+    it('should not include passwordHash in the response', () => {
+      const user: User = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        suspended: false,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const result = authService.toRegisterResponseDTO(user);
+
+      expect(result).not.toHaveProperty('passwordHash');
+    });
+  });
 });
