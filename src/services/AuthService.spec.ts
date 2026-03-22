@@ -182,6 +182,28 @@ describe('AuthService', () => {
       await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
     });
 
+    it('should throw UnauthorizedError if user is suspended', async () => {
+      const loginDto: LoginRequestDTO = {
+        email: 'user@example.com',
+        password: 'password123',
+      };
+
+      const storedUser: User = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        suspended: true,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(storedUser);
+      (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(true);
+
+      await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
+    });
+
     it('should compare the password against the stored hash', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',

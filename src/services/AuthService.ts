@@ -75,6 +75,10 @@ export class AuthService {
       throw new UnauthorizedError();
     }
 
+    if (user.suspended) {
+      throw new UnauthorizedError();
+    }
+
     const token = this.jwtManager.sign({ sub: user.id, role: user.role });
 
     return { token };
