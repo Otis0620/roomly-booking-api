@@ -24,7 +24,12 @@ export class User {
   @Column({ name: 'password_hash', type: 'varchar', nullable: false, select: false })
   passwordHash!: string;
 
-  @Column({ type: 'varchar', default: UserRole.GUEST, nullable: false })
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.GUEST,
+    nullable: false,
+  })
   role!: UserRole;
 
   @Column({ type: 'boolean', default: false, nullable: false })
