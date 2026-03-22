@@ -17,6 +17,15 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
 
   /**
+   * Finds a user by their email address, including the password hash.
+   * Use this only when password verification is required (e.g. login).
+   *
+   * @param email - The email to search for
+   * @returns The user with password hash if found, null otherwise
+   */
+  findByEmailWithPassword(email: string): Promise<User | null>;
+
+  /**
    * Finds a user by their unique ID.
    *
    * @param id - The user ID to search for
@@ -54,6 +63,17 @@ export class UserRepository implements IUserRepository {
    */
   async findByEmail(email: string): Promise<User | null> {
     return this.repository.findOneBy({ email });
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async findByEmailWithPassword(email: string): Promise<User | null> {
+    return this.repository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
   /**

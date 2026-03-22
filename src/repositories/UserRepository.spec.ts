@@ -14,6 +14,11 @@ describe('UserRepository', () => {
       findOneBy: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
+      createQueryBuilder: jest.fn().mockReturnValue({
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn(),
+      }),
     } as unknown as jest.Mocked<Repository<User>>;
 
     mockDataSource = {
@@ -30,7 +35,9 @@ describe('UserRepository', () => {
         email: 'test@example.com',
         passwordHash: 'hashedpassword',
         role: UserRole.GUEST,
+        suspended: false,
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       mockRepository.findOneBy.mockResolvedValue(user);
@@ -50,6 +57,44 @@ describe('UserRepository', () => {
     });
   });
 
+  describe('findByEmailWithPassword', () => {
+    it('should return user with passwordHash when found', async () => {
+      const user: User = {
+        id: '123',
+        email: 'test@example.com',
+        passwordHash: 'hashedpassword',
+        role: UserRole.GUEST,
+        suspended: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const queryBuilder = mockRepository.createQueryBuilder('user');
+
+      (queryBuilder.getOne as jest.Mock).mockResolvedValue(user);
+
+      const result = await userRepository.findByEmailWithPassword('test@example.com');
+
+      expect(mockRepository.createQueryBuilder).toHaveBeenCalledWith('user');
+      expect(queryBuilder.addSelect).toHaveBeenCalledWith('user.passwordHash');
+      expect(queryBuilder.where).toHaveBeenCalledWith('user.email = :email', {
+        email: 'test@example.com',
+      });
+      expect(result).toEqual(user);
+      expect(result?.passwordHash).toBe('hashedpassword');
+    });
+
+    it('should return null when user not found', async () => {
+      const queryBuilder = mockRepository.createQueryBuilder('user');
+
+      (queryBuilder.getOne as jest.Mock).mockResolvedValue(null);
+
+      const result = await userRepository.findByEmailWithPassword('nonexistent@example.com');
+
+      expect(result).toBeNull();
+    });
+  });
+
   describe('findById', () => {
     it('should return user when found', async () => {
       const user: User = {
@@ -57,7 +102,9 @@ describe('UserRepository', () => {
         email: 'test@example.com',
         passwordHash: 'hashedpassword',
         role: UserRole.GUEST,
+        suspended: false,
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       mockRepository.findOneBy.mockResolvedValue(user);
@@ -84,12 +131,15 @@ describe('UserRepository', () => {
         passwordHash: 'hashedpassword',
         role: UserRole.GUEST,
       };
+
       const createdUser: User = {
         id: '456',
         email: 'new@example.com',
         passwordHash: 'hashedpassword',
         role: UserRole.GUEST,
+        suspended: false,
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       mockRepository.create.mockReturnValue(createdUser);

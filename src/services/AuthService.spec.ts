@@ -1,5 +1,6 @@
 import { LoginRequestDTO } from '@dtos/auth/LoginRequestDTO';
 import { RegisterRequestDTO } from '@dtos/auth/RegisterRequestDTO';
+import { User } from '@entities/User';
 import { BadRequestError, UnauthorizedError } from '@errors/CustomErrors';
 import { BcryptManager } from '@lib/crypto/BcryptManager';
 import { JwtManager } from '@lib/jwt/JwtManager';
@@ -17,6 +18,7 @@ describe('AuthService', () => {
   beforeEach(() => {
     mockUserRepository = {
       findByEmail: jest.fn(),
+      findByEmailWithPassword: jest.fn(),
       create: jest.fn(),
     };
 
@@ -38,30 +40,42 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should throw a BadRequestError if user already exists', async () => {
-      const existingUser = {
+      const registerDto: RegisterRequestDTO = {
         email: 'existing@example.com',
         password: '12345',
         role: UserRole.GUEST,
       };
 
+      const existingUser: User = {
+        id: 'user-id-1',
+        email: 'existing@example.com',
+        role: UserRole.GUEST,
+        suspended: false,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
       (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(existingUser);
 
-      await expect(authService.register(existingUser)).rejects.toThrow(BadRequestError);
+      await expect(authService.register(registerDto)).rejects.toThrow(BadRequestError);
     });
 
     it('should look up the user by email', async () => {
       const registerDto: RegisterRequestDTO = {
-        email: 'user@example.com',
-        password: 'password123',
+        email: 'new@example.com',
+        password: '12345',
         role: UserRole.GUEST,
       };
 
-      const createdUser = {
+      const createdUser: User = {
         id: 'user-id-1',
-        email: 'user@example.com',
+        email: 'new@example.com',
         role: UserRole.GUEST,
+        suspended: false,
         passwordHash: 'hashed_password',
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(null);
@@ -70,22 +84,24 @@ describe('AuthService', () => {
 
       await authService.register(registerDto);
 
-      expect(mockUserRepository.findByEmail).toHaveBeenCalledWith('user@example.com');
+      expect(mockUserRepository.findByEmail).toHaveBeenCalledWith('new@example.com');
     });
 
     it('should hash the password before creating the user', async () => {
       const registerDto: RegisterRequestDTO = {
-        email: 'user@example.com',
-        password: 'password123',
+        email: 'new@example.com',
+        password: '12345',
         role: UserRole.GUEST,
       };
 
-      const createdUser = {
+      const createdUser: User = {
         id: 'user-id-1',
-        email: 'user@example.com',
+        email: 'new@example.com',
         role: UserRole.GUEST,
+        suspended: false,
         passwordHash: 'hashed_password',
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(null);
@@ -94,7 +110,7 @@ describe('AuthService', () => {
 
       await authService.register(registerDto);
 
-      expect(mockBcryptManager.hash).toHaveBeenCalledWith('password123');
+      expect(mockBcryptManager.hash).toHaveBeenCalledWith('12345');
       expect(mockUserRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({ passwordHash: 'hashed_password' }),
       );
@@ -102,17 +118,19 @@ describe('AuthService', () => {
 
     it('should create the user and return a RegisterResponseDTO', async () => {
       const registerDto: RegisterRequestDTO = {
-        email: 'user@example.com',
-        password: 'password123',
+        email: 'new@example.com',
+        password: '12345',
         role: UserRole.GUEST,
       };
 
-      const createdUser = {
+      const createdUser: User = {
         id: 'user-id-1',
-        email: 'user@example.com',
+        email: 'new@example.com',
         role: UserRole.GUEST,
+        suspended: false,
         passwordHash: 'hashed_password',
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(null);
@@ -137,7 +155,7 @@ describe('AuthService', () => {
         password: 'password123',
       };
 
-      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(null);
+      (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(null);
 
       await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
     });
@@ -148,15 +166,17 @@ describe('AuthService', () => {
         password: 'password123',
       };
 
-      const storedUser = {
+      const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
         role: UserRole.GUEST,
+        suspended: false,
         passwordHash: 'hashed_password',
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(storedUser);
+      (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(storedUser);
       (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(false);
 
       await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
@@ -168,15 +188,17 @@ describe('AuthService', () => {
         password: 'password123',
       };
 
-      const storedUser = {
+      const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
         role: UserRole.GUEST,
+        suspended: false,
         passwordHash: 'hashed_password',
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(storedUser);
+      (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(storedUser);
       (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(true);
       (mockJwtManager.sign as jest.Mock).mockReturnValueOnce('jwt-token');
 
@@ -191,15 +213,17 @@ describe('AuthService', () => {
         password: 'password123',
       };
 
-      const storedUser = {
+      const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
         role: UserRole.GUEST,
+        suspended: false,
         passwordHash: 'hashed_password',
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      (mockUserRepository.findByEmail as jest.Mock).mockResolvedValueOnce(storedUser);
+      (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(storedUser);
       (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(true);
       (mockJwtManager.sign as jest.Mock).mockReturnValueOnce('jwt-token');
 

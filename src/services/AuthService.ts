@@ -63,7 +63,7 @@ export class AuthService {
    * @throws {UnauthorizedError} If email is not found or password is invalid
    */
   async login(loginDto: LoginRequestDTO): Promise<LoginResponseDTO> {
-    const user = await this.userRepository.findByEmail(loginDto.email);
+    const user = await this.userRepository.findByEmailWithPassword(loginDto.email);
 
     if (!user) {
       throw new UnauthorizedError();
