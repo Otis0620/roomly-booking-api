@@ -1,17 +1,15 @@
 import 'reflect-metadata';
 import { DataSource, QueryRunner, EntityMetadata } from 'typeorm';
 
-import { getDataSource } from '@infra/database/dataSource';
-
 /**
  * Executes a database operation with foreign key checks temporarily disabled.
  *
  * Useful for truncating or clearing tables that have foreign key constraints.
  *
  * @template Result
- * @param {DataSource} dataSource - The TypeORM data source to use.
- * @param {(queryRunner: QueryRunner) => Promise<Result>} executeWithRunner - The operation to execute with foreign key checks disabled.
- * @returns {Promise<Result>} The result of the provided operation.
+ * @param dataSource - The TypeORM data source to use
+ * @param executeWithRunner - The operation to execute with foreign key checks disabled
+ * @returns The result of the provided operation
  */
 async function withForeignKeyChecksDisabled<Result>(
   dataSource: DataSource,
@@ -36,13 +34,11 @@ async function withForeignKeyChecksDisabled<Result>(
 /**
  * Quotes a MySQL table path for use in raw SQL queries.
  *
- * Example:
- * ```ts
+ * @example
  * quoteMySqlTablePath('mydb.users') // => `mydb`.`users`
- * ```
  *
- * @param {string} tablePath - The table path to quote.
- * @returns {string} The quoted table path.
+ * @param tablePath - The table path to quote
+ * @returns The quoted table path
  */
 function quoteMySqlTablePath(tablePath: string): string {
   return tablePath
@@ -54,9 +50,8 @@ function quoteMySqlTablePath(tablePath: string): string {
 /**
  * Truncates all tables corresponding to the given entity metadata.
  *
- * @param {QueryRunner} queryRunner - The active query runner.
- * @param {EntityMetadata[]} entities - List of entities to truncate.
- * @returns {Promise<void>}
+ * @param queryRunner - The active query runner
+ * @param entities - List of entities to truncate
  */
 async function truncateAllEntitiesMySQL(
   queryRunner: QueryRunner,
@@ -72,14 +67,13 @@ async function truncateAllEntitiesMySQL(
 /**
  * Initializes the test database connection.
  *
- * If a connection already exists, it is destroyed and re-initialized.
+ * If a connection already exists it is destroyed and re-initialized.
  *
- * @returns {Promise<DataSource>} The initialized data source.
- * @throws {Error} If the database fails to initialize.
+ * @param dataSource - The TypeORM data source to initialize
+ * @returns The initialized data source
+ * @throws If the database fails to initialize
  */
-export const setupTestDatabase = async (): Promise<DataSource> => {
-  const dataSource = getDataSource();
-
+export async function setupTestDatabase(dataSource: DataSource): Promise<DataSource> {
   try {
     if (dataSource.isInitialized) {
       await dataSource.destroy();
@@ -90,37 +84,31 @@ export const setupTestDatabase = async (): Promise<DataSource> => {
     console.error('Error initializing test database:', error);
     throw error;
   }
-};
+}
 
 /**
  * Closes the test database connection if it is initialized.
  *
- * @returns {Promise<void>}
+ * @param dataSource - The TypeORM data source to close
  */
-export const closeTestDatabase = async (): Promise<void> => {
-  const dataSource = getDataSource();
-
+export async function closeTestDatabase(dataSource: DataSource): Promise<void> {
   if (dataSource.isInitialized) {
     await dataSource.destroy();
   }
-};
+}
 
 /**
  * Clears all data from the test database by truncating all entity tables.
  *
- * Automatically initializes the data source if it is not already initialized,
- * disables foreign key checks during truncation, and re-enables them afterward.
+ * Disables foreign key checks during truncation and re-enables them afterward.
  *
- * @returns {Promise<void>}
+ * @param dataSource - The TypeORM data source to clear
  */
-export const clearTestDatabase = async (): Promise<void> => {
-  const dataSource = getDataSource();
-
+export async function clearTestDatabase(dataSource: DataSource): Promise<void> {
   if (!dataSource.isInitialized) {
     await dataSource.initialize();
   }
-
   await withForeignKeyChecksDisabled(dataSource, (queryRunner) =>
     truncateAllEntitiesMySQL(queryRunner, dataSource.entityMetadatas),
   );
-};
+}

@@ -1,6 +1,8 @@
 import 'reflect-metadata';
+import { DataSource } from 'typeorm';
+
 import { validateEnv } from '@config/env';
-import { getDataSource } from '@infra/database/dataSource';
+import { buildDataSourceConfig } from '@infra/database/buildDataSourceConfig';
 import { createContainer } from '@infra/di/container';
 
 import { createApp } from './app';
@@ -11,12 +13,12 @@ import { createApp } from './app';
 async function main(): Promise<void> {
   const env = validateEnv();
 
-  const dataSource = getDataSource();
+  const dataSource = new DataSource(buildDataSourceConfig(env));
 
   await dataSource.initialize();
   console.log('✓ Database connected');
 
-  const container = createContainer();
+  const container = createContainer({ dataSource });
 
   const app = createApp(container);
 

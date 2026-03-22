@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 
 import { getEnv } from '@config/env';
 import { AuthController } from '@controllers/AuthController';
-import { getDataSource } from '@infra/database/dataSource';
+import { buildDataSourceConfig } from '@infra/database/buildDataSourceConfig';
 import { IDENTIFIERS } from '@infra/di/identifiers';
 import { BcryptManager } from '@lib/crypto/BcryptManager';
 import { JwtManager } from '@lib/jwt/JwtManager';
@@ -37,7 +37,7 @@ export function createContainer(options: ContainerOptions = {}): Container {
 
   const container = new Container({ defaultScope: 'Transient' });
 
-  const dataSource = options.dataSource ?? getDataSource();
+  const dataSource = options.dataSource ?? new DataSource(buildDataSourceConfig(env));
 
   container.bind<DataSource>(IDENTIFIERS.DataSource).toConstantValue(dataSource);
 

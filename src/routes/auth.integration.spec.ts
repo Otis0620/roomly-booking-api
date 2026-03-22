@@ -1,10 +1,13 @@
+import 'reflect-metadata';
 import request from 'supertest';
 
 import { createContainer } from '@infra/di/container';
 
 import { createApp } from '../app';
+import { testDataSource } from '../test/utils/testDataSource';
 
-const app = createApp(createContainer());
+const container = createContainer({ dataSource: testDataSource });
+const app = createApp(container);
 
 describe('auth', () => {
   describe('POST /api/v1/auth/register', () => {
