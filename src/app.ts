@@ -3,6 +3,7 @@ import helmet from 'helmet';
 import { Container } from 'inversify';
 
 import { errorHandler } from '@middleware/errorHandler';
+import { requestId } from '@middleware/requestId';
 import { createRoutes } from '@routes/routerFactory';
 
 /**
@@ -14,17 +15,14 @@ import { createRoutes } from '@routes/routerFactory';
 export function createApp(container: Container): Application {
   const app = express();
 
-  app.use(helmet());
-
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
+  app.use(requestId);
+  app.use(helmet());
+  app.use(express.json());
   app.use('/api', createRoutes(container));
-
   app.use(errorHandler);
 
   return app;

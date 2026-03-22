@@ -11,6 +11,7 @@ describe('errorHandler', () => {
   beforeEach(() => {
     req = {};
     res = {
+      locals: { requestId: 'test-request-id' },
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
@@ -27,7 +28,8 @@ describe('errorHandler', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'Validation failed',
       code: 400,
-      details: details,
+      requestId: 'test-request-id',
+      details,
     });
   });
 
@@ -40,6 +42,7 @@ describe('errorHandler', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'Invalid input',
       code: 400,
+      requestId: 'test-request-id',
     });
   });
 
@@ -52,6 +55,7 @@ describe('errorHandler', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'Something went wrong',
       code: 418,
+      requestId: 'test-request-id',
     });
   });
 
@@ -64,6 +68,7 @@ describe('errorHandler', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'Invalid token',
       code: 401,
+      requestId: 'test-request-id',
     });
   });
 
@@ -76,6 +81,7 @@ describe('errorHandler', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'User not found',
       code: 404,
+      requestId: 'test-request-id',
     });
   });
 
@@ -88,6 +94,7 @@ describe('errorHandler', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'Internal Server Error',
       code: 500,
+      requestId: 'test-request-id',
     });
   });
 
@@ -99,5 +106,23 @@ describe('errorHandler', () => {
     expect(res.json).not.toHaveBeenCalledWith(
       expect.objectContaining({ error: 'Database connection failed' }),
     );
+  });
+
+  it('should include requestId as undefined when not set', () => {
+    res = {
+      locals: {},
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    const error = new NotFoundError('Not found');
+
+    errorHandler(error, req as Request, res as Response, next);
+
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Not found',
+      code: 404,
+      requestId: undefined,
+    });
   });
 });
