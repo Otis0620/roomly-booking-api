@@ -44,6 +44,8 @@ let cachedEnv: EnvConfig | null = null;
 
 /**
  * Validates all required environment variables.
+ *
+ * @throws {Error} If any required variable is missing or invalid
  */
 export function validateEnv(): EnvConfig {
   if (cachedEnv) {
@@ -117,6 +119,10 @@ export function validateEnv(): EnvConfig {
   const TYPEORM_SYNCHRONIZE = process.env.TYPEORM_SYNCHRONIZE === 'true';
   const TYPEORM_LOGGING = process.env.TYPEORM_LOGGING === 'true';
 
+  if (NODE_ENV === 'production' && TYPEORM_SYNCHRONIZE) {
+    errors.push('TYPEORM_SYNCHRONIZE must be false in production — use migrations only');
+  }
+
   if (errors.length > 0) {
     throw new Error(`Environment validation failed:\n  - ${errors.join('\n  - ')}`);
   }
@@ -141,6 +147,8 @@ export function validateEnv(): EnvConfig {
 
 /**
  * Gets the validated environment config.
+ *
+ * @throws {Error} If validateEnv() has not been called first
  */
 export function getEnv(): EnvConfig {
   if (!cachedEnv) {
