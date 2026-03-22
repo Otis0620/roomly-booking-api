@@ -34,6 +34,7 @@ export function validate(schema: Joi.Schema) {
     }
 
     req.body = value;
+
     next();
   };
 }

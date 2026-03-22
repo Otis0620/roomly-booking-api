@@ -18,19 +18,8 @@ export interface ContainerOptions {
 /**
  * Creates a fully configured DI container.
  *
- * Call this ONCE at application startup. The container is the composition root
- * where all dependencies are wired together.
- *
  * @param options - Optional overrides (primarily for testing)
  * @returns Configured InversifyJS container
- *
- * @example
- * // Production
- * const container = createContainer();
- *
- * @example
- * // Testing with mock database
- * const container = createContainer({ dataSource: mockDataSource });
  */
 export function createContainer(options: ContainerOptions = {}): Container {
   const env = getEnv();
