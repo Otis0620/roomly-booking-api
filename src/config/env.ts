@@ -28,6 +28,7 @@ loadEnvFile();
 export interface EnvConfig {
   NODE_ENV: 'development' | 'production' | 'test';
   PORT: number;
+  ALLOWED_ORIGIN: string;
   JWT_SECRET: string;
   JWT_EXPIRES_IN: string;
   BCRYPT_SALT_ROUNDS: number;
@@ -64,6 +65,12 @@ export function validateEnv(): EnvConfig {
 
   if (isNaN(PORT) || PORT < 1 || PORT > 65535) {
     errors.push('PORT must be a valid port number (1-65535)');
+  }
+
+  const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
+
+  if (!ALLOWED_ORIGIN) {
+    errors.push('ALLOWED_ORIGIN is required');
   }
 
   const JWT_SECRET = process.env.JWT_SECRET;
@@ -130,6 +137,7 @@ export function validateEnv(): EnvConfig {
   cachedEnv = {
     NODE_ENV: NODE_ENV as EnvConfig['NODE_ENV'],
     PORT,
+    ALLOWED_ORIGIN: ALLOWED_ORIGIN!,
     JWT_SECRET: JWT_SECRET!,
     JWT_EXPIRES_IN: JWT_EXPIRES_IN!,
     BCRYPT_SALT_ROUNDS: BCRYPT_SALT_ROUNDS!,

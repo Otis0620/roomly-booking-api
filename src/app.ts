@@ -1,7 +1,9 @@
+import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
 import { Container } from 'inversify';
 
+import { getEnv } from '@config/env';
 import { errorHandler } from '@middleware/errorHandler';
 import { requestId } from '@middleware/requestId';
 import { createRoutes } from '@routes/routerFactory';
@@ -19,7 +21,10 @@ export function createApp(container: Container): Application {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
+  const env = getEnv();
+
   app.use(requestId);
+  app.use(cors({ origin: env.ALLOWED_ORIGIN, credentials: true }));
   app.use(helmet());
   app.use(express.json());
   app.use('/api', createRoutes(container));
