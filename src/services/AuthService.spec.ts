@@ -229,7 +229,7 @@ describe('AuthService', () => {
       expect(mockBcryptManager.compare).toHaveBeenCalledWith('password123', 'hashed_password');
     });
 
-    it('should return a token on successful login', async () => {
+    it('should return a token and user on successful login', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
         password: 'password123',
@@ -255,7 +255,55 @@ describe('AuthService', () => {
         sub: 'user-id-1',
         role: UserRole.GUEST,
       });
-      expect(result).toEqual({ token: 'jwt-token' });
+      expect(result).toEqual({
+        token: 'jwt-token',
+        user: {
+          id: 'user-id-1',
+          email: 'user@example.com',
+          role: UserRole.GUEST,
+        },
+      });
+    });
+  });
+
+  describe('toLoginResponseDTO', () => {
+    it('should map a token and User entity to a LoginResponseDTO', () => {
+      const user: User = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        suspended: false,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const result = authService.toLoginResponseDTO('jwt-token', user);
+
+      expect(result).toEqual({
+        token: 'jwt-token',
+        user: {
+          id: 'user-id-1',
+          email: 'user@example.com',
+          role: UserRole.GUEST,
+        },
+      });
+    });
+
+    it('should not include passwordHash in the response', () => {
+      const user: User = {
+        id: 'user-id-1',
+        email: 'user@example.com',
+        role: UserRole.GUEST,
+        suspended: false,
+        passwordHash: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const result = authService.toLoginResponseDTO('jwt-token', user);
+
+      expect(result.user).not.toHaveProperty('passwordHash');
     });
   });
 

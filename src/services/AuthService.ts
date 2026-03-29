@@ -82,7 +82,25 @@ export class AuthService {
 
     const token = this.jwtManager.sign({ sub: user.id, role: user.role });
 
-    return { token };
+    return this.toLoginResponseDTO(token, user);
+  }
+
+  /**
+   * Converts a User entity and token to a login response DTO.
+   *
+   * @param token - Signed JWT token
+   * @param user - User entity from database
+   * @returns Login response data
+   */
+  toLoginResponseDTO(token: string, user: User): LoginResponseDTO {
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+    };
   }
 
   /**

@@ -75,13 +75,18 @@ describe('auth', () => {
   });
 
   describe('POST /api/v1/auth/login', () => {
-    it('should return 200 with a token on valid credentials', async () => {
+    it('should return 200 with a token and user on valid credentials', async () => {
       const response = await request(app)
         .post('/api/v1/auth/login')
         .send({ email: 'existing@example.com', password: 'password123' });
 
       expect(response.status).toBe(200);
       expect(response.body.token).toBeDefined();
+      expect(response.body.user).toMatchObject({
+        email: 'existing@example.com',
+        role: 'guest',
+      });
+      expect(response.body.user.id).toBeDefined();
     });
 
     it('should return 401 when email does not exist', async () => {
