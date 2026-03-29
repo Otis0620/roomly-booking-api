@@ -92,7 +92,7 @@ export class AuthService {
    * @param user - User entity from database
    * @returns Login response data
    */
-  toLoginResponseDTO(token: string, user: User): LoginResponseDTO {
+  private toLoginResponseDTO(token: string, user: User): LoginResponseDTO {
     return {
       token,
       user: {
@@ -109,7 +109,7 @@ export class AuthService {
    * @param user - User entity from database
    * @returns Registration response data
    */
-  toRegisterResponseDTO(user: User): RegisterResponseDTO {
+  private toRegisterResponseDTO(user: User): RegisterResponseDTO {
     return {
       id: user.id,
       email: user.email,
