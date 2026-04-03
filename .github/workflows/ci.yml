@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm install -g npm@latest && npm ci
       - run: npx prettier --check "src/**/*.{ts,js}"
 
   lint:
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm install -g npm@latest && npm ci
       - run: npm run lint
 
   test:
@@ -39,5 +39,5 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm install -g npm@latest && npm ci
       - run: npm run test
