@@ -7,9 +7,9 @@ import { RegisterResponseDTO } from '@dtos/auth/RegisterResponseDTO';
 import { User } from '@entities/User';
 import { BadRequestError, UnauthorizedError } from '@errors/CustomErrors';
 import { IDENTIFIERS } from '@infra/di/identifiers';
-import { BcryptManager } from '@lib/crypto/BcryptManager';
-import { JwtManager } from '@lib/jwt/JwtManager';
-import { IUserRepository } from '@repositories/UserRepository';
+import type { BcryptManager } from '@lib/crypto/BcryptManager';
+import type { JwtManager } from '@lib/jwt/JwtManager';
+import type { IUserRepository } from '@repositories/UserRepository';
 
 /**
  * Service handling authentication business logic.
