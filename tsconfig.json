@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "node16",
+    "moduleResolution": "node16",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -15,22 +15,23 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "declaration": true,
-    "baseUrl": "./",
+    "isolatedModules": true,
+    "types": ["jest"],
     "paths": {
-      "@config/*": ["src/config/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@dtos/*": ["src/dtos/*"],
-      "@entities/*": ["src/entities/*"],
-      "@errors/*": ["src/errors/*"],
-      "@infra/*": ["src/infrastructure/*"],
-      "@lib/*": ["src/lib/*"],
-      "@middleware/*": ["src/middleware/*"],
-      "@repositories/*": ["src/repositories/*"],
-      "@routes/*": ["src/routes/*"],
-      "@services/*": ["src/services/*"],
-      "@validators/*": ["src/validators/*"]
+      "@config/*": ["./src/config/*"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@dtos/*": ["./src/dtos/*"],
+      "@entities/*": ["./src/entities/*"],
+      "@errors/*": ["./src/errors/*"],
+      "@infra/*": ["./src/infrastructure/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@middleware/*": ["./src/middleware/*"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@routes/*": ["./src/routes/*"],
+      "@services/*": ["./src/services/*"],
+      "@validators/*": ["./src/validators/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

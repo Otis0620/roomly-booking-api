@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { DataSource, Repository } from 'typeorm';
+import type { DataSource, Repository } from 'typeorm';
 
 import { User } from '@entities/User';
 import { IDENTIFIERS } from '@infra/di/identifiers';

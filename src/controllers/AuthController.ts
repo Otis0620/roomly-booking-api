@@ -4,7 +4,7 @@ import { injectable, inject } from 'inversify';
 import { LoginRequestDTO } from '@dtos/auth/LoginRequestDTO';
 import { RegisterRequestDTO } from '@dtos/auth/RegisterRequestDTO';
 import { IDENTIFIERS } from '@infra/di/identifiers';
-import { AuthService } from '@services/AuthService';
+import type { AuthService } from '@services/AuthService';
 
 /**
  * Authentication controller.
