@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Index,
 } from 'typeorm';
 
 import { UserRole } from '@lib/types/userTypes';
@@ -17,7 +16,6 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Index()
   @Column({ type: 'varchar', unique: true, nullable: false })
   email!: string;
 
