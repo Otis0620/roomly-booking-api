@@ -24,8 +24,10 @@ export function createApp(container: Container): Application {
   const env = getEnv();
 
   app.use(requestId);
-  app.use((req, _res, next) => {
-    console.log(`${req.method} ${req.url}`);
+  app.use((req, res, next) => {
+    res.on('finish', () => {
+      console.log(`${req.method} ${req.url} ${res.statusCode}`);
+    });
     next();
   });
   app.use(cors({ origin: env.ALLOWED_ORIGIN, credentials: true }));
