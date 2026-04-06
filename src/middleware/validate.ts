@@ -3,9 +3,6 @@ import Joi from 'joi';
 
 import { BadRequestError } from '@errors/CustomErrors';
 
-/**
- * Validation error detail.
- */
 export interface ValidationDetail {
   field: string;
   message: string;

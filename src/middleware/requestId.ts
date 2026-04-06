@@ -7,6 +7,10 @@ import { Request, Response, NextFunction } from 'express';
  * Attaches the ID to `res.locals.requestId` for use in downstream
  * middleware and the error handler, and sets it as the `X-Request-Id`
  * response header so clients can correlate requests with error responses.
+ *
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Express next function
  */
 export function requestId(req: Request, res: Response, next: NextFunction): void {
   const id = randomUUID();
