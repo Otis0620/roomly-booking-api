@@ -6,8 +6,6 @@ import { IDENTIFIERS } from '@infra/di/identifiers';
 @injectable()
 export class BcryptManager {
   /**
-   * Creates a new BcryptManager instance.
-   *
    * @param saltRounds - Cost factor for bcrypt hashing. Determines the number
    *   of iterations as 2^saltRounds (e.g. 10 = 1,024 iterations). Higher
    *   values are more secure but slower to compute.

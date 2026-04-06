@@ -2,16 +2,6 @@ import Joi from 'joi';
 
 import { UserRole } from '@lib/types/userTypes';
 
-/**
- * Joi schema for user registration.
- *
- * Validates:
- * - email: Required, valid email format
- * - password: Required, 8-100 characters
- * - firstName: Required
- * - lastName: Required
- * - role: Optional, must be 'guest' or 'owner'
- */
 export const registerSchema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': 'Please provide a valid email address',
@@ -39,13 +29,6 @@ export const registerSchema = Joi.object({
   }),
 });
 
-/**
- * Joi schema for user login.
- *
- * Validates:
- * - email: Required, valid email format
- * - password: Required
- */
 export const loginSchema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': 'Please provide a valid email address',

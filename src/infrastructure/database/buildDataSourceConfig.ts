@@ -6,6 +6,7 @@ import { EnvConfig } from '@config/env';
  * Builds the TypeORM DataSource configuration from validated env config.
  *
  * @param env - Validated environment configuration from validateEnv()
+ * @returns TypeORM DataSource options
  */
 export function buildDataSourceConfig(env: EnvConfig): ConstructorParameters<typeof DataSource>[0] {
   return {

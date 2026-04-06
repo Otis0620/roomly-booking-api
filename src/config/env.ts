@@ -22,9 +22,6 @@ function loadEnvFile(): void {
 
 loadEnvFile();
 
-/**
- * Environment configuration.
- */
 export interface EnvConfig {
   NODE_ENV: 'development' | 'production' | 'test';
   PORT: number;
@@ -46,6 +43,7 @@ let cachedEnv: EnvConfig | null = null;
 /**
  * Validates all required environment variables.
  *
+ * @returns Validated environment configuration
  * @throws {Error} If any required variable is missing or invalid
  */
 export function validateEnv(): EnvConfig {
@@ -156,6 +154,7 @@ export function validateEnv(): EnvConfig {
 /**
  * Gets the validated environment config.
  *
+ * @returns Validated environment configuration
  * @throws {Error} If validateEnv() has not been called first
  */
 export function getEnv(): EnvConfig {

@@ -12,8 +12,6 @@ export interface JwtPayload {
 @injectable()
 export class JwtManager {
   /**
-   * Creates a new JwtManager instance.
-   *
    * @param jwtSecret - Secret key for signing and verifying tokens
    * @param jwtExpiresIn - Token expiration duration (e.g. '1h', '7d')
    */
