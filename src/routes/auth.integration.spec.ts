@@ -14,7 +14,7 @@ describe('auth', () => {
     it('should return 201 with user data on valid registration', async () => {
       const response = await request(app).post('/api/v1/auth/register').send({
         email: 'newuser@example.com',
-        password: 'password123',
+        password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
       });
@@ -34,7 +34,7 @@ describe('auth', () => {
     it('should return 400 when email is already registered', async () => {
       const response = await request(app).post('/api/v1/auth/register').send({
         email: 'existing@example.com',
-        password: 'password123',
+        password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
       });
@@ -45,7 +45,7 @@ describe('auth', () => {
     it('should return 201 with owner role when role is specified', async () => {
       const response = await request(app).post('/api/v1/auth/register').send({
         email: 'owner@example.com',
-        password: 'password123',
+        password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
         role: 'owner',
@@ -64,7 +64,7 @@ describe('auth', () => {
     it('should return 400 when email is invalid', async () => {
       const response = await request(app).post('/api/v1/auth/register').send({
         email: 'notanemail',
-        password: 'password123',
+        password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
       });
@@ -74,8 +74,8 @@ describe('auth', () => {
 
     it('should return 400 when password is too short', async () => {
       const response = await request(app).post('/api/v1/auth/register').send({
-        email: 'newuser@example.com',
-        password: 'short',
+        email: 'shortPassword@example.com',
+        password: '1234',
         firstName: 'James',
         lastName: 'Brown',
       });
@@ -83,10 +83,32 @@ describe('auth', () => {
       expect(response.status).toBe(400);
     });
 
+    it('should return 400 when first name is empty', async () => {
+      const response = await request(app).post('/api/v1/auth/register').send({
+        email: 'emtpyFirstName@example.com',
+        password: '12345678',
+        firstName: '',
+        lastName: 'Brown',
+      });
+
+      expect(response.status).toBe(400);
+    });
+
+    it('should return 400 when last name is empty', async () => {
+      const response = await request(app).post('/api/v1/auth/register').send({
+        email: 'emptyLastName@example.com',
+        password: '12345678',
+        firstName: 'James',
+        lastName: '',
+      });
+
+      expect(response.status).toBe(400);
+    });
+
     it('should return 400 when role is invalid', async () => {
       const response = await request(app).post('/api/v1/auth/register').send({
-        email: 'newuser@example.com',
-        password: 'password123',
+        email: 'invalidRole@example.com',
+        password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
         role: 'superadmin',
@@ -100,7 +122,7 @@ describe('auth', () => {
     it('should return 200 with a token and user on valid credentials', async () => {
       const response = await request(app)
         .post('/api/v1/auth/login')
-        .send({ email: 'existing@example.com', password: 'password123' });
+        .send({ email: 'existing@example.com', password: '12345678' });
 
       expect(response.status).toBe(200);
       expect(response.body.token).toBeDefined();
@@ -116,7 +138,7 @@ describe('auth', () => {
     it('should return 401 when email does not exist', async () => {
       const response = await request(app)
         .post('/api/v1/auth/login')
-        .send({ email: 'nonexistent@example.com', password: 'password123' });
+        .send({ email: 'nonexistent@example.com', password: '12345678' });
 
       expect(response.status).toBe(401);
     });

@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import { User } from '@entities/User';
 import { UserRole } from '@lib/types/userTypes';
 
-const DEFAULT_PASSWORD = 'password123';
+const DEFAULT_PASSWORD = '12345678';
 const SALT_ROUNDS = 10;
 
 /**
