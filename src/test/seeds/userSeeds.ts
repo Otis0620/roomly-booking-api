@@ -23,6 +23,8 @@ export async function seedUser(
 
   const user = repository.create({
     email: 'existing@example.com',
+    firstName: 'James',
+    lastName: 'Brown',
     passwordHash,
     role: UserRole.GUEST,
     ...overrides,

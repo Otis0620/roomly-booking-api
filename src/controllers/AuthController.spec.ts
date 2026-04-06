@@ -35,6 +35,8 @@ describe('AuthController', () => {
       const registerDto: RegisterRequestDTO = {
         email: 'user@example.com',
         password: 'password123',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
       };
 
@@ -49,12 +51,16 @@ describe('AuthController', () => {
       const registerDto: RegisterRequestDTO = {
         email: 'user@example.com',
         password: 'password123',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
       };
 
       const result = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         createdAt: new Date().toISOString(),
       };
@@ -73,6 +79,8 @@ describe('AuthController', () => {
       const registerDto: RegisterRequestDTO = {
         email: 'user@example.com',
         password: 'password123',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
       };
 

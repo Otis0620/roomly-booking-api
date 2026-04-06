@@ -43,12 +43,15 @@ describe('AuthService', () => {
       const registerDto: RegisterRequestDTO = {
         email: 'existing@example.com',
         password: '12345',
-        role: UserRole.GUEST,
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const existingUser: User = {
         id: 'user-id-1',
         email: 'existing@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -65,12 +68,15 @@ describe('AuthService', () => {
       const registerDto: RegisterRequestDTO = {
         email: 'new@example.com',
         password: '12345',
-        role: UserRole.GUEST,
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const createdUser: User = {
         id: 'user-id-1',
         email: 'new@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -91,12 +97,15 @@ describe('AuthService', () => {
       const registerDto: RegisterRequestDTO = {
         email: 'new@example.com',
         password: '12345',
-        role: UserRole.GUEST,
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const createdUser: User = {
         id: 'user-id-1',
         email: 'new@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -120,12 +129,15 @@ describe('AuthService', () => {
       const registerDto: RegisterRequestDTO = {
         email: 'new@example.com',
         password: '12345',
-        role: UserRole.GUEST,
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const createdUser: User = {
         id: 'user-id-1',
         email: 'new@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -142,6 +154,8 @@ describe('AuthService', () => {
       expect(result).toEqual({
         id: createdUser.id,
         email: createdUser.email,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
         role: createdUser.role,
         createdAt: createdUser.createdAt.toISOString(),
       });
@@ -169,6 +183,8 @@ describe('AuthService', () => {
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -191,6 +207,8 @@ describe('AuthService', () => {
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: true,
         passwordHash: 'hashed_password',
@@ -213,6 +231,8 @@ describe('AuthService', () => {
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -238,6 +258,8 @@ describe('AuthService', () => {
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -260,6 +282,8 @@ describe('AuthService', () => {
         user: {
           id: 'user-id-1',
           email: 'user@example.com',
+          firstName: 'James',
+          lastName: 'Brown',
           role: UserRole.GUEST,
         },
       });

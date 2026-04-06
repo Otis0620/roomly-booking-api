@@ -32,12 +32,12 @@ export class AuthService {
   /**
    * Registers a new user account.
    *
-   * @param registerDto - Registration data including email, password, and optional role
+   * @param registerDto - Registration data including email, password, firstName, lastName, and optional role
    * @returns The created user as a RegisterResponseDTO
    * @throws {BadRequestError} If a user with the given email already exists
    */
   async register(registerDto: RegisterRequestDTO): Promise<RegisterResponseDTO> {
-    const { email, password, role } = registerDto;
+    const { email, password, firstName, lastName, role } = registerDto;
 
     const existingUser = await this.userRepository.findByEmail(email);
 
@@ -50,6 +50,8 @@ export class AuthService {
     const user = await this.userRepository.create({
       email,
       passwordHash,
+      firstName,
+      lastName,
       role,
     });
 
@@ -98,6 +100,8 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
         role: user.role,
       },
     };
@@ -113,6 +117,8 @@ export class AuthService {
     return {
       id: user.id,
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
       role: user.role,
       createdAt: user.createdAt.toISOString(),
     };

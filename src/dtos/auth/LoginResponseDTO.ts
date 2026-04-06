@@ -13,6 +13,8 @@ export interface LoginResponseDTO {
  */
 export interface AuthUserDTO {
   id: string;
+  firstName: string;
+  lastName: string;
   email: string;
   role: UserRole;
 }
