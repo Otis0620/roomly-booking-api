@@ -24,7 +24,7 @@ export const registerSchema = Joi.object({
     'any.required': 'Last name is required',
   }),
 
-  role: Joi.string().valid(UserRole.GUEST, UserRole.OWNER).optional().messages({
+  role: Joi.string().valid(UserRole.guest, UserRole.owner).optional().messages({
     'any.only': 'Role must be either guest or owner',
   }),
 });

@@ -37,7 +37,7 @@ describe('AuthController', () => {
         password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
-        role: UserRole.GUEST,
+        role: UserRole.guest,
       };
 
       mockReq = { body: registerDto };
@@ -53,7 +53,7 @@ describe('AuthController', () => {
         password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
-        role: UserRole.GUEST,
+        role: UserRole.guest,
       };
 
       const result = {
@@ -61,7 +61,7 @@ describe('AuthController', () => {
         email: 'user@example.com',
         firstName: 'James',
         lastName: 'Brown',
-        role: UserRole.GUEST,
+        role: UserRole.guest,
         createdAt: new Date().toISOString(),
       };
 
@@ -81,7 +81,7 @@ describe('AuthController', () => {
         password: '12345678',
         firstName: 'James',
         lastName: 'Brown',
-        role: UserRole.GUEST,
+        role: UserRole.guest,
       };
 
       const error = new Error('something went wrong');

@@ -26,7 +26,7 @@ export async function seedUser(
     firstName: 'James',
     lastName: 'Brown',
     passwordHash,
-    role: UserRole.GUEST,
+    role: UserRole.guest,
     ...overrides,
   });
 
