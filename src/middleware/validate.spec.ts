@@ -21,7 +21,7 @@ describe('validate', () => {
   });
 
   it('should call next when validation passes', () => {
-    req.body = { email: 'test@example.com', password: 'password123' };
+    req.body = { email: 'test@example.com', password: '12345678' };
 
     const middleware = validate(schema);
 
@@ -31,28 +31,28 @@ describe('validate', () => {
   });
 
   it('should replace req.body with validated value', () => {
-    req.body = { email: 'test@example.com', password: 'password123' };
+    req.body = { email: 'test@example.com', password: '12345678' };
 
     const middleware = validate(schema);
 
     middleware(req as Request, res as Response, next);
 
-    expect(req.body).toEqual({ email: 'test@example.com', password: 'password123' });
+    expect(req.body).toEqual({ email: 'test@example.com', password: '12345678' });
   });
 
   it('should strip unknown fields', () => {
-    req.body = { email: 'test@example.com', password: 'password123', unknown: 'field' };
+    req.body = { email: 'test@example.com', password: '12345678', unknown: 'field' };
 
     const middleware = validate(schema);
 
     middleware(req as Request, res as Response, next);
 
-    expect(req.body).toEqual({ email: 'test@example.com', password: 'password123' });
+    expect(req.body).toEqual({ email: 'test@example.com', password: '12345678' });
     expect(req.body.unknown).toBeUndefined();
   });
 
   it('should call next with BadRequestError when validation fails', () => {
-    req.body = { email: 'invalid', password: 'short' };
+    req.body = { email: 'invalid', password: '1234' };
 
     const middleware = validate(schema);
 
@@ -74,7 +74,7 @@ describe('validate', () => {
   });
 
   it('should include field details in error', () => {
-    req.body = { email: 'invalid', password: 'short' };
+    req.body = { email: 'invalid', password: '1234' };
 
     const middleware = validate(schema);
 

@@ -34,7 +34,9 @@ describe('AuthController', () => {
     it('should call authService.register with the request body', async () => {
       const registerDto: RegisterRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
       };
 
@@ -48,13 +50,17 @@ describe('AuthController', () => {
     it('should respond with 201 and the result on success', async () => {
       const registerDto: RegisterRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
       };
 
       const result = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         createdAt: new Date().toISOString(),
       };
@@ -72,7 +78,9 @@ describe('AuthController', () => {
     it('should call next with the error on failure', async () => {
       const registerDto: RegisterRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
       };
 
@@ -91,7 +99,7 @@ describe('AuthController', () => {
     it('should call authService.login with the request body', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       mockReq = { body: loginDto };
@@ -104,7 +112,7 @@ describe('AuthController', () => {
     it('should respond with 200 and the token on success', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       const result = { token: 'jwt-token' };
@@ -121,7 +129,7 @@ describe('AuthController', () => {
     it('should call next with the error on failure', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       const error = new Error('something went wrong');

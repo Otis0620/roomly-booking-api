@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import { User } from '@entities/User';
 import { UserRole } from '@lib/types/userTypes';
 
-const DEFAULT_PASSWORD = 'password123';
+const DEFAULT_PASSWORD = '12345678';
 const SALT_ROUNDS = 10;
 
 /**
@@ -23,6 +23,8 @@ export async function seedUser(
 
   const user = repository.create({
     email: 'existing@example.com',
+    firstName: 'James',
+    lastName: 'Brown',
     passwordHash,
     role: UserRole.GUEST,
     ...overrides,

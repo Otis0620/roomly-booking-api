@@ -42,13 +42,16 @@ describe('AuthService', () => {
     it('should throw a BadRequestError if user already exists', async () => {
       const registerDto: RegisterRequestDTO = {
         email: 'existing@example.com',
-        password: '12345',
-        role: UserRole.GUEST,
+        password: '12345678',
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const existingUser: User = {
         id: 'user-id-1',
         email: 'existing@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -64,13 +67,16 @@ describe('AuthService', () => {
     it('should look up the user by email', async () => {
       const registerDto: RegisterRequestDTO = {
         email: 'new@example.com',
-        password: '12345',
-        role: UserRole.GUEST,
+        password: '12345678',
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const createdUser: User = {
         id: 'user-id-1',
         email: 'new@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -90,13 +96,16 @@ describe('AuthService', () => {
     it('should hash the password before creating the user', async () => {
       const registerDto: RegisterRequestDTO = {
         email: 'new@example.com',
-        password: '12345',
-        role: UserRole.GUEST,
+        password: '12345678',
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const createdUser: User = {
         id: 'user-id-1',
         email: 'new@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -110,7 +119,7 @@ describe('AuthService', () => {
 
       await authService.register(registerDto);
 
-      expect(mockBcryptManager.hash).toHaveBeenCalledWith('12345');
+      expect(mockBcryptManager.hash).toHaveBeenCalledWith('12345678');
       expect(mockUserRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({ passwordHash: 'hashed_password' }),
       );
@@ -119,13 +128,16 @@ describe('AuthService', () => {
     it('should create the user and return a RegisterResponseDTO', async () => {
       const registerDto: RegisterRequestDTO = {
         email: 'new@example.com',
-        password: '12345',
-        role: UserRole.GUEST,
+        password: '12345678',
+        firstName: 'James',
+        lastName: 'Brown',
       };
 
       const createdUser: User = {
         id: 'user-id-1',
         email: 'new@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -142,6 +154,8 @@ describe('AuthService', () => {
       expect(result).toEqual({
         id: createdUser.id,
         email: createdUser.email,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
         role: createdUser.role,
         createdAt: createdUser.createdAt.toISOString(),
       });
@@ -152,7 +166,7 @@ describe('AuthService', () => {
     it('should throw UnauthorizedError if user is not found', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(null);
@@ -163,12 +177,14 @@ describe('AuthService', () => {
     it('should throw UnauthorizedError if password is invalid', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -185,12 +201,14 @@ describe('AuthService', () => {
     it('should throw UnauthorizedError if user is suspended', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: true,
         passwordHash: 'hashed_password',
@@ -207,12 +225,14 @@ describe('AuthService', () => {
     it('should compare the password against the stored hash', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -226,18 +246,20 @@ describe('AuthService', () => {
 
       await authService.login(loginDto);
 
-      expect(mockBcryptManager.compare).toHaveBeenCalledWith('password123', 'hashed_password');
+      expect(mockBcryptManager.compare).toHaveBeenCalledWith('12345678', 'hashed_password');
     });
 
     it('should return a token and user on successful login', async () => {
       const loginDto: LoginRequestDTO = {
         email: 'user@example.com',
-        password: 'password123',
+        password: '12345678',
       };
 
       const storedUser: User = {
         id: 'user-id-1',
         email: 'user@example.com',
+        firstName: 'James',
+        lastName: 'Brown',
         role: UserRole.GUEST,
         suspended: false,
         passwordHash: 'hashed_password',
@@ -260,6 +282,8 @@ describe('AuthService', () => {
         user: {
           id: 'user-id-1',
           email: 'user@example.com',
+          firstName: 'James',
+          lastName: 'Brown',
           role: UserRole.GUEST,
         },
       });
