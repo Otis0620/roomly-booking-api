@@ -14,7 +14,9 @@ export interface ValidationDetail {
  * @param schema - Joi schema to validate against
  * @returns Express middleware function
  */
-export function validate(schema: Joi.Schema) {
+export function validate(
+  schema: Joi.Schema,
+): (req: Request, res: Response, next: NextFunction) => void {
   return (req: Request, _res: Response, next: NextFunction): void => {
     const { error, value } = schema.validate(req.body, {
       abortEarly: false,
