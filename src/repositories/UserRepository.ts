@@ -4,9 +4,6 @@ import type { DataSource, Repository } from 'typeorm';
 import { User } from '@entities/User';
 import { IDENTIFIERS } from '@infra/di/identifiers';
 
-/**
- * User repository interface.
- */
 export interface IUserRepository {
   /**
    * Finds a user by their email address.
@@ -42,9 +39,6 @@ export interface IUserRepository {
   create(userData: Partial<User>): Promise<User>;
 }
 
-/**
- * TypeORM implementation of the user repository.
- */
 @injectable()
 export class UserRepository implements IUserRepository {
   private repository: Repository<User>;

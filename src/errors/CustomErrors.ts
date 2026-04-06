@@ -1,6 +1,3 @@
-/**
- * Base error class for application errors.
- */
 export class BaseError extends Error {
   public status: number;
 
@@ -17,9 +14,6 @@ export class BaseError extends Error {
   }
 }
 
-/**
- * HTTP 400 Bad Request error.
- */
 export class BadRequestError<T = unknown> extends BaseError {
   public details?: T;
 
@@ -36,9 +30,6 @@ export class BadRequestError<T = unknown> extends BaseError {
   }
 }
 
-/**
- * HTTP 401 Unauthorized error.
- */
 export class UnauthorizedError extends BaseError {
   /**
    * @param message - Error message
@@ -50,9 +41,6 @@ export class UnauthorizedError extends BaseError {
   }
 }
 
-/**
- * HTTP 403 Forbidden error.
- */
 export class ForbiddenError extends BaseError {
   /**
    * @param message - Error message
@@ -64,9 +52,6 @@ export class ForbiddenError extends BaseError {
   }
 }
 
-/**
- * HTTP 404 Not Found error.
- */
 export class NotFoundError extends BaseError {
   /**
    * @param message - Error message
@@ -78,9 +63,6 @@ export class NotFoundError extends BaseError {
   }
 }
 
-/**
- * HTTP 409 Conflict error.
- */
 export class ConflictError extends BaseError {
   /**
    * @param message - Error message
@@ -92,9 +74,6 @@ export class ConflictError extends BaseError {
   }
 }
 
-/**
- * HTTP 500 Internal Server Error.
- */
 export class InternalServerError extends BaseError {
   /**
    * @param message - Error message
