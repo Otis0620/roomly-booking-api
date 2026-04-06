@@ -8,9 +8,6 @@ import {
 
 import { UserRole } from '@lib/types/userTypes';
 
-/**
- * User entity representing a registered user in the system.
- */
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')

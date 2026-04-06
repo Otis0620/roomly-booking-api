@@ -11,9 +11,6 @@ import type { BcryptManager } from '@lib/crypto/BcryptManager';
 import type { JwtManager } from '@lib/jwt/JwtManager';
 import type { IUserRepository } from '@repositories/UserRepository';
 
-/**
- * Service handling authentication business logic.
- */
 @injectable()
 export class AuthService {
   /**

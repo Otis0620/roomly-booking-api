@@ -3,9 +3,6 @@ import { injectable, inject } from 'inversify';
 
 import { IDENTIFIERS } from '@infra/di/identifiers';
 
-/**
- * Password hashing utility using bcrypt.
- */
 @injectable()
 export class BcryptManager {
   /**

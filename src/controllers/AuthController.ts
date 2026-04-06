@@ -6,11 +6,6 @@ import { RegisterRequestDTO } from '@dtos/auth/RegisterRequestDTO';
 import { IDENTIFIERS } from '@infra/di/identifiers';
 import type { AuthService } from '@services/AuthService';
 
-/**
- * Authentication controller.
- *
- * Handles HTTP requests for user registration and login.
- */
 @injectable()
 export class AuthController {
   /**

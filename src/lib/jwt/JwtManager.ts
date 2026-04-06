@@ -3,18 +3,12 @@ import * as jwt from 'jsonwebtoken';
 
 import { IDENTIFIERS } from '@infra/di/identifiers';
 
-/**
- * JWT token payload structure.
- */
 export interface JwtPayload {
   sub: string;
   role: string;
   [key: string]: unknown;
 }
 
-/**
- * JWT token utility.
- */
 @injectable()
 export class JwtManager {
   /**
