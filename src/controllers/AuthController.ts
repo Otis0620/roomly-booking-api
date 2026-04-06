@@ -21,7 +21,7 @@ export class AuthController {
   constructor(@inject(IDENTIFIERS.AuthService) private authService: AuthService) {}
 
   /**
-   * Handles POST /auth/register.
+   * Handles POST /api/v1/auth/register.
    *
    * @param req - Express request with registration data in body
    * @param res - Express response
@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   /**
-   * Handles POST /auth/login.
+   * Handles POST /api/v1/auth/login.
    *
    * @param req - Express request with login data in body
    * @param res - Express response
