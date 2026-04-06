@@ -8,7 +8,11 @@ import { createContainer } from '@infra/di/container';
 import { createApp } from './app';
 
 /**
- * Application entry point.
+ * Bootstraps the application by initialising the database connection,
+ * building the IoC container, starting the HTTP server, and registering
+ * graceful shutdown handlers for SIGTERM and SIGINT.
+ *
+ * @returns Resolves when the server is listening
  */
 async function main(): Promise<void> {
   const env = validateEnv();

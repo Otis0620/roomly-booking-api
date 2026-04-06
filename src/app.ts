@@ -13,6 +13,9 @@ import { createRoutes } from '@routes/routerFactory';
  *
  * This is the composition root for the HTTP layer.
  * All dependencies flow down from the container.
+ *
+ * @param container - Inversify IoC container
+ * @returns Configured Express application
  */
 export function createApp(container: Container): Application {
   const app = express();

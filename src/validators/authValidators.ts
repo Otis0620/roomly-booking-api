@@ -8,6 +8,8 @@ import { UserRole } from '@lib/types/userTypes';
  * Validates:
  * - email: Required, valid email format
  * - password: Required, 8-100 characters
+ * - firstName: Required
+ * - lastName: Required
  * - role: Optional, must be 'guest' or 'owner'
  */
 export const registerSchema = Joi.object({
