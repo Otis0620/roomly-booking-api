@@ -44,8 +44,6 @@ export class UserRepository implements IUserRepository {
   private repository: Repository<User>;
 
   /**
-   * Creates a new UserRepository instance.
-   *
    * @param dataSource - TypeORM DataSource injected by InversifyJS
    */
   constructor(@inject(IDENTIFIERS.DataSource) dataSource: DataSource) {

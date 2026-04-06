@@ -9,8 +9,6 @@ import type { AuthService } from '@services/AuthService';
 @injectable()
 export class AuthController {
   /**
-   * Creates a new AuthController instance.
-   *
    * @param authService - Service for authentication operations
    */
   constructor(@inject(IDENTIFIERS.AuthService) private authService: AuthService) {}
@@ -21,6 +19,7 @@ export class AuthController {
    * @param req - Express request with registration data in body
    * @param res - Express response
    * @param next - Express next function
+   * @returns Resolves when the response has been sent
    */
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -39,6 +38,7 @@ export class AuthController {
    * @param req - Express request with login data in body
    * @param res - Express response
    * @param next - Express next function
+   * @returns Resolves when the response has been sent
    */
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {

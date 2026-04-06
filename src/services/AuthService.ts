@@ -14,8 +14,6 @@ import type { IUserRepository } from '@repositories/UserRepository';
 @injectable()
 export class AuthService {
   /**
-   * Creates a new AuthService instance.
-   *
    * @param userRepository - Repository for user data access
    * @param bcryptManager - Manager for password hashing
    * @param jwtManager - Manager for JWT token operations
