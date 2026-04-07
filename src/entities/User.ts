@@ -27,8 +27,8 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: UserRole,
-    default: UserRole.GUEST,
+    enum: Object.values(UserRole),
+    default: UserRole.guest,
     nullable: false,
   })
   role!: UserRole;

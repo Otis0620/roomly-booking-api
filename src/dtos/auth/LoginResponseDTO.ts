@@ -1,4 +1,4 @@
-import { UserRole } from '@lib/types/userTypes';
+import type { UserRole } from '@lib/types/userTypes';
 
 export interface LoginResponseDTO {
   token: string;

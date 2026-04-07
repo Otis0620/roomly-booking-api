@@ -1,4 +1,4 @@
-import { UserRole } from './userTypes';
+import type { UserRole } from './userTypes';
 
 /**
  * Express type augmentation.
