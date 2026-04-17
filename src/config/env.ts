@@ -28,6 +28,7 @@ export interface EnvConfig {
   ALLOWED_ORIGIN: string;
   JWT_SECRET: string;
   JWT_EXPIRES_IN: string;
+  REFRESH_TOKEN_EXPIRES_IN: string;
   BCRYPT_SALT_ROUNDS: number;
   TYPEORM_HOST: string;
   TYPEORM_PORT: number;
@@ -85,6 +86,12 @@ export function validateEnv(): EnvConfig {
     errors.push('JWT_EXPIRES_IN is required');
   }
 
+  const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN;
+
+  if (!REFRESH_TOKEN_EXPIRES_IN) {
+    errors.push('REFRESH_TOKEN_EXPIRES_IN is required');
+  }
+
   const BCRYPT_SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS!, 10);
 
   if (isNaN(BCRYPT_SALT_ROUNDS) || BCRYPT_SALT_ROUNDS < 4 || BCRYPT_SALT_ROUNDS > 20) {
@@ -138,6 +145,7 @@ export function validateEnv(): EnvConfig {
     ALLOWED_ORIGIN: ALLOWED_ORIGIN!,
     JWT_SECRET: JWT_SECRET!,
     JWT_EXPIRES_IN: JWT_EXPIRES_IN!,
+    REFRESH_TOKEN_EXPIRES_IN: REFRESH_TOKEN_EXPIRES_IN!,
     BCRYPT_SALT_ROUNDS: BCRYPT_SALT_ROUNDS!,
     TYPEORM_HOST: TYPEORM_HOST!,
     TYPEORM_PORT,
