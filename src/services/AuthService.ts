@@ -13,6 +13,9 @@ import type { IUserRepository } from '@repositories/UserRepository';
 
 @injectable()
 export class AuthService {
+  private static readonly DUMMY_HASH =
+    '$2b$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ012345';
+
   /**
    * @param userRepository - Repository for user data access
    * @param bcryptManager - Manager for password hashing
@@ -64,6 +67,9 @@ export class AuthService {
     const user = await this.userRepository.findByEmailWithPassword(loginDto.email);
 
     if (!user) {
+      // Normalises response time so a missing email is indistinguishable from a wrong password via timing.
+      await this.bcryptManager.compare(loginDto.password, AuthService.DUMMY_HASH);
+
       throw new UnauthorizedError();
     }
 

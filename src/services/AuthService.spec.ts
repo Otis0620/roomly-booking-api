@@ -170,8 +170,26 @@ describe('AuthService', () => {
       };
 
       (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(null);
+      (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(false);
 
       await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
+    });
+
+    it('should run bcrypt.compare against the dummy hash when user is not found', async () => {
+      const loginDto: LoginRequestDTO = {
+        email: 'user@example.com',
+        password: '12345678',
+      };
+
+      (mockUserRepository.findByEmailWithPassword as jest.Mock).mockResolvedValueOnce(null);
+      (mockBcryptManager.compare as jest.Mock).mockResolvedValueOnce(false);
+
+      await expect(authService.login(loginDto)).rejects.toThrow(UnauthorizedError);
+
+      expect(mockBcryptManager.compare).toHaveBeenCalledWith(
+        '12345678',
+        '$2b$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ012345',
+      );
     });
 
     it('should throw UnauthorizedError if password is invalid', async () => {
