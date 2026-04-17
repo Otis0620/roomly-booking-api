@@ -54,14 +54,14 @@ export class UserRepository implements IUserRepository {
    * @inheritdoc
    */
   async findByEmail(email: string): Promise<User | null> {
-    return this.repository.findOneBy({ email });
+    return await this.repository.findOneBy({ email });
   }
 
   /**
    * @inheritdoc
    */
   async findByEmailWithPassword(email: string): Promise<User | null> {
-    return this.repository
+    return await this.repository
       .createQueryBuilder('user')
       .addSelect('user.passwordHash')
       .where('user.email = :email', { email })
@@ -72,15 +72,13 @@ export class UserRepository implements IUserRepository {
    * @inheritdoc
    */
   async findById(id: string): Promise<User | null> {
-    return this.repository.findOneBy({ id });
+    return await this.repository.findOneBy({ id });
   }
 
   /**
    * @inheritdoc
    */
   async create(userData: Partial<User>): Promise<User> {
-    const user = this.repository.create(userData);
-
-    return this.repository.save(user);
+    return await this.repository.save(userData);
   }
 }

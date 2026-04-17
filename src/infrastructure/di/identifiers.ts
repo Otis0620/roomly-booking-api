@@ -13,5 +13,7 @@ export const IDENTIFIERS = {
   AuthService: Symbol.for('AuthService'),
   JwtSecret: Symbol.for('JwtSecret'),
   JwtExpiresIn: Symbol.for('JwtExpiresIn'),
+  RefreshTokenRepository: Symbol.for('RefreshTokenRepository'),
+  RefreshTokenExpiresIn: Symbol.for('RefreshTokenExpiresIn'),
   BcryptSaltRounds: Symbol.for('BcryptSaltRounds'),
 } as const;

@@ -131,7 +131,7 @@ describe('UserRepository', () => {
   });
 
   describe('create', () => {
-    it('should create and save a new user', async () => {
+    it('should save and return the new user', async () => {
       const userData: Partial<User> = {
         email: 'new@example.com',
         passwordHash: 'hashedpassword',
@@ -140,7 +140,7 @@ describe('UserRepository', () => {
         role: UserRole.guest,
       };
 
-      const createdUser: User = {
+      const savedUser: User = {
         id: '456',
         email: 'new@example.com',
         passwordHash: 'hashedpassword',
@@ -152,14 +152,12 @@ describe('UserRepository', () => {
         updatedAt: new Date(),
       };
 
-      mockRepository.create.mockReturnValue(createdUser);
-      mockRepository.save.mockResolvedValue(createdUser);
+      mockRepository.save.mockResolvedValue(savedUser);
 
       const result = await userRepository.create(userData);
 
-      expect(mockRepository.create).toHaveBeenCalledWith(userData);
-      expect(mockRepository.save).toHaveBeenCalledWith(createdUser);
-      expect(result).toEqual(createdUser);
+      expect(mockRepository.save).toHaveBeenCalledWith(userData);
+      expect(result).toEqual(savedUser);
     });
   });
 });
